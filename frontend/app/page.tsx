@@ -12,7 +12,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Toaster } from '@/components/ui/sonner';
 import { toast } from 'sonner';
 import useAppStore from '@/lib/store';
-import { PlanetPosition, Location, Panchanga } from '@/lib/types';
+import { PlanetPosition, Location } from '@/lib/types';
 import { format } from 'date-fns';
 import { Sparkles, Sun, Calendar, Star, RefreshCw, BookOpen } from 'lucide-react';
 import Link from 'next/link';
@@ -49,7 +49,7 @@ export default function Home() {
       dateTime.setHours(parseInt(hours), parseInt(minutes));
 
       // Call API to calculate panchanga
-      const response = await fetch('/api/panchanga', {
+      const response = await fetch('/api/v1/panchanga', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -64,26 +64,34 @@ export default function Home() {
         throw new Error('Failed to calculate panchanga');
       }
 
-      const panchanga = await response.json();
-      // Convert date string back to Date object
-      panchanga.date = new Date(panchanga.date);
+      const responseData = await response.json();
+      // Restructure the data to match the expected format
+      const panchanga = {
+        date: new Date(responseData.date),
+        location: responseData.location,
+        ...responseData.panchanga, // Spread the nested panchanga properties
+        // Map sun/moon rise/set to expected format
+        sunrise: responseData.sun?.rise || 'N/A',
+        sunset: responseData.sun?.set || 'N/A',
+        moonrise: responseData.moon?.rise || 'N/A',
+        moonset: responseData.moon?.set || 'N/A',
+        // Map muhurta timings to expected format
+        rahuKala: responseData.muhurta?.rahuKala || { start: 'N/A', end: 'N/A' },
+        yamaGanda: responseData.muhurta?.yamaGanda || { start: 'N/A', end: 'N/A' },
+        gulikaKala: responseData.muhurta?.gulikaKala || { start: 'N/A', end: 'N/A' },
+        abhijitMuhurta: responseData.muhurta?.abhijit || { start: 'N/A', end: 'N/A' },
+        durmuhurta: [],
+        muhurta: responseData.muhurta,
+        calendar: responseData.calendar,
+        ayanamsha: responseData.calendar?.ayanamsha,
+        api: responseData.api
+      };
+
       setPanchangaData(panchanga);
 
-      // Call planetary positions API
-      const positionsResponse = await fetch('/api/planetary-positions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          date: dateTime.toISOString(),
-          location: currentLocation
-        }),
-      });
-
-      if (positionsResponse.ok) {
-        const positionsData = await positionsResponse.json();
-        setPlanetaryPositions(positionsData.positions || []);
+      // Extract planetary positions from the response
+      if (responseData.planets) {
+        setPlanetaryPositions(responseData.planets || []);
       }
 
       toast.success('Panchanga calculated successfully');
@@ -330,7 +338,7 @@ export default function Home() {
                                 <div className="p-3 bg-green-50 dark:bg-green-950/30 rounded-lg border border-green-200 dark:border-green-800">
                                   <div className="font-medium text-green-700 dark:text-green-400">Abhijit Muhurta</div>
                                   <div className="text-muted-foreground mt-1">
-                                    {panchangaData.abhijitMuhurta.start} - {panchangaData.abhijitMuhurta.end}
+                                    {panchangaData.muhurta?.abhijit?.start || 'N/A'} - {panchangaData.muhurta?.abhijit?.end || 'N/A'}
                                   </div>
                                   <div className="text-xs text-muted-foreground mt-1">Best time for all activities</div>
                                 </div>
@@ -343,21 +351,21 @@ export default function Home() {
                               <div className="p-3 bg-red-50 dark:bg-red-950/30 rounded-lg border border-red-200 dark:border-red-800">
                                 <div className="font-medium text-red-700 dark:text-red-400">Rahu Kala</div>
                                 <div className="text-muted-foreground mt-1">
-                                  {panchangaData.rahuKala.start} - {panchangaData.rahuKala.end}
+                                  {panchangaData.muhurta?.rahuKala?.start || 'N/A'} - {panchangaData.muhurta?.rahuKala?.end || 'N/A'}
                                 </div>
                                 <div className="text-xs text-muted-foreground mt-1">Avoid important activities</div>
                               </div>
                               <div className="p-3 bg-orange-50 dark:bg-orange-950/30 rounded-lg border border-orange-200 dark:border-orange-800">
                                 <div className="font-medium text-orange-700 dark:text-orange-400">Yama Ganda</div>
                                 <div className="text-muted-foreground mt-1">
-                                  {panchangaData.yamaGanda.start} - {panchangaData.yamaGanda.end}
+                                  {panchangaData.muhurta?.yamaGanda?.start || 'N/A'} - {panchangaData.muhurta?.yamaGanda?.end || 'N/A'}
                                 </div>
                                 <div className="text-xs text-muted-foreground mt-1">Not suitable for new beginnings</div>
                               </div>
                               <div className="p-3 bg-yellow-50 dark:bg-yellow-950/30 rounded-lg border border-yellow-200 dark:border-yellow-800">
                                 <div className="font-medium text-yellow-700 dark:text-yellow-400">Gulika Kala</div>
                                 <div className="text-muted-foreground mt-1">
-                                  {panchangaData.gulikaKala.start} - {panchangaData.gulikaKala.end}
+                                  {panchangaData.muhurta?.gulikaKala?.start || 'N/A'} - {panchangaData.muhurta?.gulikaKala?.end || 'N/A'}
                                 </div>
                                 <div className="text-xs text-muted-foreground mt-1">Avoid auspicious activities</div>
                               </div>

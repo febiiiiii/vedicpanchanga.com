@@ -4,7 +4,6 @@ import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { Progress } from '@/components/ui/progress';
 import { Panchanga } from '@/lib/types';
 import { Sun, Moon, Calendar, Clock, MapPin } from 'lucide-react';
 import { SanskritTerm, SANSKRIT_EXPLANATIONS } from '@/components/sanskrit-term';
@@ -93,12 +92,6 @@ export function PanchangaCard({ panchanga }: PanchangaCardProps) {
                   <span>Until {panchanga.tithi.endTime}</span>
                 </div>
               </div>
-              <div className="space-y-1">
-                <Progress value={panchanga.tithi.percentage} className="h-2 bg-purple-100 dark:bg-purple-900" />
-                <div className="text-xs text-muted-foreground text-right">
-                  {panchanga.tithi.percentage.toFixed(1)}% completed
-                </div>
-              </div>
             </div>
 
             {/* Nakshatra */}
@@ -109,19 +102,15 @@ export function PanchangaCard({ panchanga }: PanchangaCardProps) {
                   <span className="text-lg font-semibold text-blue-700 dark:text-blue-400">
                     {panchanga.nakshatra.name}
                   </span>
-                  <Badge variant="secondary" className="ml-2">
-                    Pada {panchanga.nakshatra.pada}
-                  </Badge>
+                  {panchanga.nakshatra.pada && (
+                    <Badge variant="secondary" className="ml-2">
+                      Pada {panchanga.nakshatra.pada}
+                    </Badge>
+                  )}
                 </div>
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Clock className="h-3 w-3" />
                   <span>Until {panchanga.nakshatra.endTime}</span>
-                </div>
-              </div>
-              <div className="space-y-1">
-                <Progress value={panchanga.nakshatra.percentage} className="h-2 bg-blue-100 dark:bg-blue-900" />
-                <div className="text-xs text-muted-foreground text-right">
-                  {panchanga.nakshatra.percentage.toFixed(1)}% completed
                 </div>
               </div>
             </div>
@@ -194,7 +183,7 @@ export function PanchangaCard({ panchanga }: PanchangaCardProps) {
                 <Badge variant="default" className="bg-green-600">Auspicious</Badge>
               </div>
               <div className="text-lg font-bold text-green-800 dark:text-green-300">
-                {panchanga.abhijitMuhurta.start} - {panchanga.abhijitMuhurta.end}
+                {panchanga.muhurta?.abhijit?.start || 'N/A'} - {panchanga.muhurta?.abhijit?.end || 'N/A'}
               </div>
               <p className="text-xs text-green-700 dark:text-green-400 mt-1">Best time for all activities</p>
             </div>
@@ -206,7 +195,7 @@ export function PanchangaCard({ panchanga }: PanchangaCardProps) {
                 <Badge variant="destructive">Inauspicious</Badge>
               </div>
               <div className="text-lg font-bold text-red-700 dark:text-red-400">
-                {panchanga.rahuKala.start} - {panchanga.rahuKala.end}
+                {panchanga.muhurta?.rahuKala?.start || 'N/A'} - {panchanga.muhurta?.rahuKala?.end || 'N/A'}
               </div>
               <p className="text-xs text-red-600 dark:text-red-400 mt-1">Avoid important activities</p>
             </div>
@@ -218,7 +207,7 @@ export function PanchangaCard({ panchanga }: PanchangaCardProps) {
                 <Badge variant="secondary" className="bg-orange-200 dark:bg-orange-800">Unfavorable</Badge>
               </div>
               <div className="text-lg font-bold text-orange-700 dark:text-orange-400">
-                {panchanga.yamaGanda.start} - {panchanga.yamaGanda.end}
+                {panchanga.muhurta?.yamaGanda?.start || 'N/A'} - {panchanga.muhurta?.yamaGanda?.end || 'N/A'}
               </div>
               <p className="text-xs text-orange-600 dark:text-orange-400 mt-1">Not suitable for new beginnings</p>
             </div>
@@ -230,7 +219,7 @@ export function PanchangaCard({ panchanga }: PanchangaCardProps) {
                 <Badge variant="secondary" className="bg-yellow-200 dark:bg-yellow-800">Unfavorable</Badge>
               </div>
               <div className="text-lg font-bold text-yellow-700 dark:text-yellow-400">
-                {panchanga.gulikaKala.start} - {panchanga.gulikaKala.end}
+                {panchanga.muhurta?.gulikaKala?.start || 'N/A'} - {panchanga.muhurta?.gulikaKala?.end || 'N/A'}
               </div>
               <p className="text-xs text-yellow-600 dark:text-yellow-400 mt-1">Avoid auspicious activities</p>
             </div>

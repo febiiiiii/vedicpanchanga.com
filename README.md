@@ -132,7 +132,25 @@ The frontend will be available at `http://localhost:3000`
 
 ## 📚 API Documentation
 
-### Endpoints
+### Next.js API Endpoints
+
+#### `POST /api/v1/panchanga` or `GET /api/v1/panchanga`
+**Streamlined API with CORS support** - Perfect for external applications!
+
+Returns essential panchanga data including:
+- Complete panchanga (tithi, nakshatra, yoga, karana, vaara)
+- Sun/Moon timings (sunrise, sunset, moonrise, moonset)
+- Muhurta timings (Rahu Kala, Yama Ganda, Gulika Kala, Abhijit)
+- Planetary positions in zodiac signs
+- Vimsottari Dasha periods
+- Calendar information (masa, ritu, samvatsara)
+
+#### `POST /api/complete` or `GET /api/complete`
+**Comprehensive data endpoint** with extended metadata and full calculation details.
+
+See [API.md](frontend/API.md) for complete documentation and examples.
+
+### Individual Endpoints (Python Backend)
 
 #### `POST /panchanga`
 Calculate complete panchanga for a given date and location.
@@ -146,7 +164,7 @@ Calculate Vimsottari Dasha periods.
 #### `POST /cities/search`
 Search for cities in the database.
 
-API documentation is available at `http://localhost:8000/docs` when the server is running.
+Backend API documentation is available at `http://localhost:8000/docs` when the server is running.
 
 ## 📄 License
 
