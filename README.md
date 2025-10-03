@@ -1,10 +1,7 @@
 # Drik Panchanga
 
-[![GitHub stars](https://img.shields.io/github/stars/bidyashish/drik-panchanga?style=social)](https://github.com/bidyashish/drik-panchanga/stargazers)
-[![GitHub issues](https://img.shields.io/github/issues/bidyashish/drik-panchanga)](https://github.com/bidyashish/drik-panchanga/issues)
-[![GitHub license](https://img.shields.io/badge/license-AGPL--3.0%20%26%20MIT-blue)](https://github.com/bidyashish/drik-panchanga/blob/main/LICENSE)
 
-High-precision Hindu almanac calculator with modern web interface. Calculate traditional Panchanga for any date (5000 BCE - 5000 CE) and location.
+Drik Panchang calculator with modern web interface. Calculate traditional Panchanga for any date (5000 BCE - 5000 CE) and location.
 
 ⭐ **If you find this project useful, please consider giving it a star on GitHub!** It helps others discover this tool.
 
@@ -66,17 +63,29 @@ We welcome contributions! Here's how you can help:
 ### 💡 Have a Feature Request?
 [Create an issue](https://github.com/bidyashish/drik-panchanga/issues/new) describing the feature and why it would be useful.
 
-### 🔧 Want to Contribute Code?
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
 ### ⭐ Support the Project
 - **Star this repository** to help others find it
 - Share it with others who might find it useful
 - Report issues and suggest improvements
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=bidyashish/drik-panchanga&type=Date)](https://star-history.com/#bidyashish/drik-panchanga&Date)
+
+## Contributors
+
+Thanks to all the contributors who have helped make this project better!
+
+[![Contributors](https://contrib.rocks/image?repo=bidyashish/drik-panchanga)](https://github.com/bidyashish/drik-panchanga/graphs/contributors)
+
+## Trending
+
+<a href="https://github.com/trending/python?since=daily" target="_blank">
+  <img src="https://img.shields.io/badge/Trending-Python-blue?style=for-the-badge&logo=github" alt="Trending Python">
+</a>
+<a href="https://github.com/trending/javascript?since=daily" target="_blank">
+  <img src="https://img.shields.io/badge/Trending-JavaScript-yellow?style=for-the-badge&logo=github" alt="Trending JavaScript">
+</a>
 
 ## Credits
 
