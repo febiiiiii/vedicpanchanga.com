@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { checkRateLimit } from '@/lib/rate-limiter';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
@@ -13,11 +14,21 @@ const corsHeaders = {
 // Helper to format time in 12-hour format
 const formatTime = (time: any): string => {
   if (!time) return 'N/A';
-  const hours = time.hours || 0;
+  let hours = time.hours || 0;
   const minutes = time.minutes || 0;
+
+  // Handle times after midnight (hours >= 24)
+  let nextDay = false;
+  if (hours >= 24) {
+    hours = hours - 24;
+    nextDay = true;
+  }
+
   const h = hours % 12 || 12;
   const ampm = hours >= 12 ? 'PM' : 'AM';
-  return `${h}:${minutes.toString().padStart(2, '0')} ${ampm}`;
+  const timeStr = `${h}:${minutes.toString().padStart(2, '0')} ${ampm}`;
+
+  return nextDay ? `${timeStr} (+1)` : timeStr;
 };
 
 // Helper to convert timezone to offset
@@ -28,6 +39,10 @@ const getTimezoneOffset = (timezone: string = 'Asia/Kolkata'): number => {
     'America/New_York': -5,
     'America/Los_Angeles': -8,
     'America/Chicago': -6,
+    'America/Denver': -7,
+    'America/Phoenix': -7,
+    'America/Toronto': -5,
+    'America/Vancouver': -8,
     'Europe/London': 0,
     'Europe/Paris': 1,
     'Asia/Dubai': 4,
@@ -35,7 +50,35 @@ const getTimezoneOffset = (timezone: string = 'Asia/Kolkata'): number => {
     'Asia/Tokyo': 9,
     'Australia/Sydney': 10,
   };
-  return timezoneOffsets[timezone] || 5.5;
+
+  // Try to get from mapping, otherwise calculate from current date
+  if (timezone in timezoneOffsets) {
+    return timezoneOffsets[timezone];
+  }
+
+  // Calculate offset from current timezone if possible
+  try {
+    const date = new Date();
+    const formatter = new Intl.DateTimeFormat('en', {
+      timeZone: timezone,
+      timeZoneName: 'shortOffset'
+    });
+    const parts = formatter.formatToParts(date);
+    const offset = parts.find(p => p.type === 'timeZoneName')?.value;
+    if (offset && offset.startsWith('GMT')) {
+      const match = offset.match(/GMT([+-]\d{1,2}):?(\d{2})?/);
+      if (match) {
+        const hours = parseInt(match[1]);
+        const minutes = match[2] ? parseInt(match[2]) : 0;
+        return hours + minutes / 60;
+      }
+    }
+  } catch (e) {
+    console.warn(`Could not determine offset for timezone ${timezone}, using default`);
+  }
+
+  // Default to IST offset if unknown
+  return 5.5;
 };
 
 export async function OPTIONS() {
@@ -44,6 +87,24 @@ export async function OPTIONS() {
 
 export async function POST(request: NextRequest) {
   try {
+    // Check rate limit
+    const rateLimitResult = await checkRateLimit(request);
+
+    if (!rateLimitResult.success) {
+      return NextResponse.json(
+        { error: 'Too many requests. Please try again later.' },
+        {
+          status: 429,
+          headers: {
+            ...corsHeaders,
+            'X-RateLimit-Limit': rateLimitResult.limit.toString(),
+            'X-RateLimit-Remaining': rateLimitResult.remaining.toString(),
+            'X-RateLimit-Reset': rateLimitResult.reset.toString(),
+          }
+        }
+      );
+    }
+
     const body = await request.json();
     const { date, location } = body;
 

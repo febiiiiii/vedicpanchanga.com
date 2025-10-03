@@ -2,25 +2,18 @@
 
 ## Available API Endpoints
 
-### 1. Streamlined Panchanga API (v1)
+### 1. Panchanga API (v1)
 
 `POST /api/v1/panchanga`
 `GET /api/v1/panchanga`
 
-Provides streamlined panchanga data with CORS support for external applications. Includes all essential panchanga calculations, sun/moon timings, muhurta periods, planetary positions, and vimsottari dasha.
+Main API endpoint providing streamlined panchanga data with CORS support for both internal and external applications. Includes all essential panchanga calculations, sun/moon timings, muhurta periods, planetary positions, and vimsottari dasha.
 
-### 2. Complete API Endpoint
-
-`POST /api/complete`
-`GET /api/complete`
-
-Provides comprehensive panchanga calculations with extended metadata in a single request.
-
-### 3. Cities Search API
+### 2. Cities Search API
 
 `POST /api/cities`
 
-Search for cities in the database for location coordinates.
+Search for cities in the database to get location coordinates for panchanga calculations.
 
 Base URL: `http://localhost:3000` (development) or your production URL
 

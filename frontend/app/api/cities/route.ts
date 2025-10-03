@@ -1,21 +1,41 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { searchCity } from '@/lib/api-client';
+import { searchCities, getPopularCities, CITIES_BY_COUNTRY } from '@/lib/world-cities';
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { city_name } = body;
+    const { city_name, action } = body;
 
-    if (!city_name) {
-      return NextResponse.json(
-        { error: 'City name is required' },
-        { status: 400 }
-      );
+    // Return popular cities for quick selection
+    if (action === 'popular') {
+      const popularCities = getPopularCities();
+      return NextResponse.json(popularCities);
     }
 
-    const cities = await searchCity(city_name);
+    // Return all cities grouped by country
+    if (action === 'all') {
+      return NextResponse.json(CITIES_BY_COUNTRY);
+    }
 
-    return NextResponse.json(cities);
+    // Search for specific city
+    if (!city_name || city_name.trim().length < 2) {
+      return NextResponse.json([]);
+    }
+
+    const cities = searchCities(city_name);
+
+    // Map to expected format
+    const formattedCities = cities.map(city => ({
+      city: city.name,
+      country: city.country,
+      latitude: city.latitude,
+      longitude: city.longitude,
+      timezone: city.timezone,
+      region: city.region || city.country,
+      population: city.population
+    }));
+
+    return NextResponse.json(formattedCities);
   } catch (error) {
     console.error('Error searching city:', error);
     return NextResponse.json(

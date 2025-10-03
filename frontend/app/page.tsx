@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { PanchangaCard } from '@/components/panchanga-card';
-import { LocationPicker } from '@/components/location-picker';
+import { CityDropdown } from '@/components/city-dropdown';
 import { DateTimePicker } from '@/components/date-time-picker';
 import { PlanetaryPositions } from '@/components/planetary-positions';
 import { ThemeToggle } from '@/components/theme-toggle';
@@ -241,13 +241,17 @@ export default function Home() {
                 onDateChange={setSelectedDate}
                 onTimeChange={setSelectedTime}
               />
-              {currentLocation && (
-                <LocationPicker
-                  location={currentLocation}
-                  onLocationChange={handleLocationChange}
-                  recentLocations={recentLocations}
-                />
-              )}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Location</CardTitle>
+                  <CardDescription>
+                    Select your location for accurate calculations
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <CityDropdown onLocationChange={handleLocationChange} />
+                </CardContent>
+              </Card>
               <Button
                 onClick={calculateAndSetPanchanga}
                 disabled={loading}

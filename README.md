@@ -145,8 +145,8 @@ Returns essential panchanga data including:
 - Vimsottari Dasha periods
 - Calendar information (masa, ritu, samvatsara)
 
-#### `POST /api/complete` or `GET /api/complete`
-**Comprehensive data endpoint** with extended metadata and full calculation details.
+#### `POST /api/cities`
+Search for cities in the database to get location coordinates.
 
 See [API.md](frontend/API.md) for complete documentation and examples.
 
