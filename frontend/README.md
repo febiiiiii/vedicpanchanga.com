@@ -8,10 +8,10 @@ Next.js 15 frontend for the Vedic Panchanga application.
 # Install dependencies
 npm install
 
-# Set up environment
-echo "NEXT_PUBLIC_API_URL=http://localhost:8000" > .env.local
+# Set up environment (optional - defaults to http://localhost:8121)
+echo "NEXT_PUBLIC_API_URL=http://localhost:8121" > .env.local
 
-# Development
+# Development (runs on port 3121)
 npm run dev
 
 # Production build

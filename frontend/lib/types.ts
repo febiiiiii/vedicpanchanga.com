@@ -59,13 +59,16 @@ export interface RashiPosition {
 
 export interface PlanetPosition {
   name: string;
+  planet?: string; // Alternative property name
   longitude: number;
   latitude: number;
   speed: number;
   retrograde: boolean;
-  rashi: RashiPosition;
+  rashi?: RashiPosition;
+  zodiac_sign?: string; // Alternative to rashi
   house?: number;
   nakshatra: string;
+  pada?: number;
   navashaRashi?: string;
 }
 
@@ -87,6 +90,24 @@ export interface Panchanga {
   gulikaKala: TimeRange;
   abhijitMuhurta: TimeRange;
   durmuhurta: TimeRange[];
+  muhurta?: {
+    abhijit?: TimeRange;
+    rahuKala?: TimeRange;
+    yamaGanda?: TimeRange;
+    gulikaKala?: TimeRange;
+  };
+  calendar?: {
+    masa?: string;
+    ritu?: string;
+    samvatsara?: string;
+    ayanamsha?: number;
+    sakaYear?: number;
+    kaliYear?: number;
+  };
+  api?: {
+    version: string;
+    timestamp: string;
+  };
 }
 
 export interface TimeRange {

@@ -25,7 +25,6 @@ export default function Home() {
     setSelectedDate,
     panchangaData,
     setPanchangaData,
-    recentLocations,
     addRecentLocation
   } = useAppStore();
 

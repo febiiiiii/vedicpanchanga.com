@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { checkRateLimit } from '@/lib/rate-limiter';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8121';
 
 // CORS headers for external API access
 const corsHeaders = {
@@ -12,7 +12,7 @@ const corsHeaders = {
 };
 
 // Helper to format time in 12-hour format
-const formatTime = (time: any): string => {
+const formatTime = (time: { hours?: number; minutes?: number } | undefined | null): string => {
   if (!time) return 'N/A';
   let hours = time.hours || 0;
   const minutes = time.minutes || 0;
@@ -73,7 +73,7 @@ const getTimezoneOffset = (timezone: string = 'Asia/Kolkata'): number => {
         return hours + minutes / 60;
       }
     }
-  } catch (e) {
+  } catch {
     console.warn(`Could not determine offset for timezone ${timezone}, using default`);
   }
 

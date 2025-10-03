@@ -49,7 +49,7 @@ export function PlanetaryPositions({ positions }: PlanetaryPositionsProps) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {positions.map((position: any, idx: number) => (
+            {positions.map((position, idx) => (
               <TableRow key={idx}>
                 <TableCell className="font-medium">
                   <span className="flex items-center gap-2">

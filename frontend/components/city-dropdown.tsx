@@ -20,7 +20,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import useAppStore from '@/lib/store';
 import type { Location } from '@/lib/types';
-import { searchCities, getPopularCities, POPULAR_CITIES, City } from '@/lib/world-cities';
+import { searchCities, getPopularCities, City } from '@/lib/world-cities';
 import debounce from 'lodash/debounce';
 
 interface CityDropdownProps {
@@ -38,17 +38,17 @@ export function CityDropdown({ onLocationChange, className }: CityDropdownProps)
   const [isDetecting, setIsDetecting] = useState(false);
 
   // Debounced search
-  const performSearch = React.useCallback(
-    debounce((query: string) => {
+  const performSearch = React.useCallback((query: string) => {
+    const debouncedFn = debounce(() => {
       if (query.length >= 2) {
         const results = searchCities(query);
         setSearchResults(results);
       } else {
         setSearchResults([]);
       }
-    }, 300),
-    []
-  );
+    }, 300);
+    debouncedFn();
+  }, []);
 
   useEffect(() => {
     performSearch(searchValue);
