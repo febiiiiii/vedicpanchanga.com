@@ -1,202 +1,84 @@
-# Vedic Panchanga - Hindu Calendar System
+# Drik Panchanga
 
-A comprehensive Hindu lunisolar calendar application with accurate astronomical calculations based on the Swiss Ephemeris.
+[![GitHub stars](https://img.shields.io/github/stars/bidyashish/drik-panchanga?style=social)](https://github.com/bidyashish/drik-panchanga/stargazers)
+[![GitHub issues](https://img.shields.io/github/issues/bidyashish/drik-panchanga)](https://github.com/bidyashish/drik-panchanga/issues)
+[![GitHub license](https://img.shields.io/badge/license-AGPL--3.0%20%26%20MIT-blue)](https://github.com/bidyashish/drik-panchanga/blob/main/LICENSE)
 
-## 🌟 Features
+High-precision Hindu almanac calculator with modern web interface. Calculate traditional Panchanga for any date (5000 BCE - 5000 CE) and location.
 
-- **Complete Panchanga Calculations**
-  - Tithi (Lunar day)
-  - Nakshatra (Lunar mansion)
-  - Yoga (Sun-Moon combination)
-  - Karana (Half-tithi)
-  - Vaara (Weekday with planetary lord)
+⭐ **If you find this project useful, please consider giving it a star on GitHub!** It helps others discover this tool.
 
-- **Muhurta Timings**
-  - Rahu Kala
-  - Yama Ganda
-  - Gulika Kala
-  - Abhijit Muhurta
-
-- **Astronomical Data**
-  - Sunrise, Sunset, Moonrise, Moonset
-  - Planetary positions in zodiac signs
-  - Ayanamsha (Lahiri)
-  - Vimsottari Dasha periods
-
-- **Modern Web Interface**
-  - Responsive design
-  - Dark/Light mode
-  - Location-based calculations
-  - Date/Time picker
-
-## 🏗️ Project Structure
-
-```
-vedic-panchanga/
-├── backend/                    # Python FastAPI backend
-│   ├── api.py                 # REST API server
-│   ├── panchanga.py           # Core calculations
-│   ├── vimsottari.py          # Dasha calculations
-│   ├── vedic.py               # Vedic astrology functions
-│   ├── cities.json            # Cities database
-│   ├── sanskrit_names.json   # Sanskrit terminology
-│   └── requirements.txt      # Python dependencies
-│
-├── frontend/                   # Next.js 15 frontend
-│   ├── app/                   # App router pages
-│   ├── components/            # React components
-│   ├── lib/                   # Utilities and types
-│   ├── public/                # Static assets
-│   └── package.json          # Node dependencies
-│
-└── README.md                  # This file
-```
-
-## 🚀 Quick Start
-
-### Prerequisites
-
-- Python 3.8+
-- Node.js 18+
-- npm or yarn
-
-### Setup Commands
+## Quick Start
 
 ```bash
-# Backend Setup - Install Python dependencies
-cd backend && python -m venv venv && source venv/bin/activate && pip install -r requirements.txt
+# Clone repository
+git clone https://github.com/bidyashish/drik-panchanga
+cd drik-panchanga
 
-# Frontend Setup - Install Node dependencies
-cd frontend && npm install
+# One-command setup and run
+./setup.sh
 
-# Create frontend environment file
-cd frontend && echo "NEXT_PUBLIC_API_URL=http://localhost:8000" > .env.local
+# Or manual setup:
+# Terminal 1 - Backend
+cd backend
+python -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
+pip install -r requirements.txt
+python api.py
+
+# Terminal 2 - Frontend
+cd frontend
+npm install
+echo "NEXT_PUBLIC_API_URL=http://localhost:8000" > .env.local
+npm run dev
 ```
 
-### Development Commands
+Open http://localhost:3000
 
-Run these commands from the project root directory:
+## Features
 
-```bash
-# Run both backend and frontend together (requires 'concurrently' package)
-# npm install -g concurrently
-concurrently "cd backend && source venv/bin/activate && python api.py" "cd frontend && npm run dev"
+**Panchanga Elements**: Tithi • Nakshatra • Yoga • Karana • Vaara
+**Timings**: Sunrise/Sunset • Moonrise/Moonset • Rahu Kala • Yama Ganda • Gulika • Abhijit
+**Astronomical**: Planetary positions • Vimsottari Dasha • Ayanamsha (Lahiri)
+**Modern UI**: Dark/Light mode • 100,000+ locations • Responsive design
 
-# Or run them separately in different terminals:
+## Tech Stack
 
-# Backend only
-cd backend && source venv/bin/activate && python api.py
+**Backend**: Python • FastAPI • PySwisseph
+**Frontend**: Next.js 15 • React 19 • TypeScript • Tailwind CSS v4 • Shadcn/ui
 
-# Frontend only
-cd frontend && npm run dev
-```
+## API Documentation
 
-### Build & Production
+Main endpoint: `http://localhost:3000/api/v1/panchanga`
+Full docs: See [API.md](./API.md) • Backend docs: `http://localhost:8000/docs`
 
-```bash
-# Build frontend for production
-cd frontend && npm run build
+## License
 
-# Start frontend production server
-cd frontend && npm run start
-```
+**Backend**: AGPL-3.0 • **Frontend**: MIT
 
-### Utility Commands
+## Contributing
 
-```bash
-# Clean all generated files and dependencies
-rm -rf frontend/node_modules frontend/.next backend/__pycache__ backend/venv
+We welcome contributions! Here's how you can help:
 
-# Reinstall everything
-cd backend && python -m venv venv && source venv/bin/activate && pip install -r requirements.txt
-cd frontend && npm install
-```
+### 🐛 Found a Bug?
+[Open an issue](https://github.com/bidyashish/drik-panchanga/issues/new) with details about the problem and steps to reproduce.
 
-The backend API will be available at `http://localhost:8000`
-The frontend will be available at `http://localhost:3000`
+### 💡 Have a Feature Request?
+[Create an issue](https://github.com/bidyashish/drik-panchanga/issues/new) describing the feature and why it would be useful.
 
-## 🛠️ Technology Stack
+### 🔧 Want to Contribute Code?
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-### Backend
-- **FastAPI** - Modern Python web framework
-- **Swiss Ephemeris** - High-precision astronomical calculations
-- **Pydantic** - Data validation
-- **CORS** - Cross-origin resource sharing
+### ⭐ Support the Project
+- **Star this repository** to help others find it
+- Share it with others who might find it useful
+- Report issues and suggest improvements
 
-### Frontend
-- **Next.js 15** - React framework with App Router
-- **TypeScript** - Type-safe JavaScript
-- **Tailwind CSS** - Utility-first CSS
-- **Shadcn/ui** - Modern UI components
-- **date-fns** - Date formatting utilities
+## Credits
 
-## 📚 API Documentation
-
-### Next.js API Endpoints
-
-#### `POST /api/v1/panchanga` or `GET /api/v1/panchanga`
-**Streamlined API with CORS support** - Perfect for external applications!
-
-Returns essential panchanga data including:
-- Complete panchanga (tithi, nakshatra, yoga, karana, vaara)
-- Sun/Moon timings (sunrise, sunset, moonrise, moonset)
-- Muhurta timings (Rahu Kala, Yama Ganda, Gulika Kala, Abhijit)
-- Planetary positions in zodiac signs
-- Vimsottari Dasha periods
-- Calendar information (masa, ritu, samvatsara)
-
-#### `POST /api/cities`
-Search for cities in the database to get location coordinates.
-
-See [API.md](frontend/API.md) for complete documentation and examples.
-
-### Individual Endpoints (Python Backend)
-
-#### `POST /panchanga`
-Calculate complete panchanga for a given date and location.
-
-#### `POST /planetary-positions`
-Get positions of all planets in zodiac signs.
-
-#### `POST /vimsottari-dasha`
-Calculate Vimsottari Dasha periods.
-
-#### `POST /cities/search`
-Search for cities in the database.
-
-Backend API documentation is available at `http://localhost:8000/docs` when the server is running.
-
-## 📄 License
-
-This project contains multiple licenses:
-
-### Backend (Python Code)
-The backend code is based on the original Drik Panchanga project and is licensed under the **GNU Affero General Public License v3.0 (AGPL-3.0)**. See [backend/LICENSE](backend/LICENSE) for details.
-
-### Swiss Ephemeris
-The astronomical calculations use the Swiss Ephemeris, which has its own licensing terms. For commercial use, please refer to [Swiss Ephemeris License](http://www.astro.com/swisseph/swephinfo_e.htm).
-
-### Frontend (Next.js Code)
-The frontend code is licensed under the **MIT License**. See [frontend/LICENSE](frontend/LICENSE) for details.
-
-## 🙏 Acknowledgments
-
-- Original Drik Panchanga by Satish Bysany
-- Swiss Ephemeris by Astrodienst AG
-- Hindu calendar algorithms from various traditional sources
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## 📧 Support
-
-For issues and questions, please use the GitHub Issues page.
-
-## 🌍 Usage Note
-
-This application provides traditional Hindu calendar calculations for educational and personal use. For critical muhurta or astrological decisions, please consult with qualified practitioners.
-
----
-
-**Note**: Calculations are based on traditional algorithms and may vary slightly from other panchanga sources due to different calculation methods or ayanamsha systems.
+Based on [Drik Panchanga](https://github.com/bdsatish/drik-panchanga) by Satish BD.
+Uses Swiss Ephemeris for astronomical calculations.
