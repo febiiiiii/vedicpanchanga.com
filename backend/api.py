@@ -34,7 +34,7 @@ app = FastAPI(
 # CORS middleware to allow Next.js app to call this API
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://localhost:3001"],  # Add your Next.js app URLs
+    allow_origins=["http://localhost:3121", "http://localhost:3000"],  # Add your Next.js app URLs
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

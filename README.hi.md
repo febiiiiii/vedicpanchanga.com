@@ -25,11 +25,11 @@ python api.py
 # टर्मिनल 2 - फ्रंटएंड
 cd frontend
 npm install
-echo "NEXT_PUBLIC_API_URL=http://localhost:8000" > .env.local
+echo "NEXT_PUBLIC_API_URL=http://localhost:8121" > .env.local
 npm run dev
 ```
 
-ब्राउज़र में http://localhost:3000 खोलें
+ब्राउज़र में http://localhost:3121 खोलें
 
 ## विशेषताएं
 
@@ -45,8 +45,8 @@ npm run dev
 
 ## API दस्तावेज़
 
-मुख्य एंडपॉइंट: `http://localhost:3000/api/v1/panchanga`
-पूर्ण दस्तावेज़: [API.md](./API.md) देखें • बैकएंड दस्तावेज़: `http://localhost:8000/docs`
+मुख्य एंडपॉइंट: `http://localhost:3121/api/v1/panchanga`
+पूर्ण दस्तावेज़: [API.md](./API.md) देखें • बैकएंड दस्तावेज़: `http://localhost:8121/docs`
 
 
 ### ⭐ परियोजना का समर्थन करें

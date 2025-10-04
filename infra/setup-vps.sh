@@ -89,7 +89,7 @@ npm run build
 
 # Create .env.local
 cat > .env.local <<'EOF'
-NEXT_PUBLIC_API_URL=http://localhost:8000
+NEXT_PUBLIC_API_URL=http://localhost:8121
 PORT=3001
 EOF
 

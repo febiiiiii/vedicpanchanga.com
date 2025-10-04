@@ -54,15 +54,15 @@ fi
 # Create .env.local if it doesn't exist
 if [ ! -f ".env.local" ]; then
     echo "Creating environment file..."
-    echo "NEXT_PUBLIC_API_URL=http://localhost:8000" > .env.local
+    echo "NEXT_PUBLIC_API_URL=http://localhost:8121" > .env.local
 fi
 
 echo -e "${GREEN}✓ Frontend setup complete${NC}"
 
 # Start both servers
 echo -e "\n${YELLOW}Starting servers...${NC}"
-echo "Backend: http://localhost:8000 (API docs: http://localhost:8000/docs)"
-echo "Frontend: http://localhost:3000"
+echo "Backend: http://localhost:8121 (API docs: http://localhost:8121/docs)"
+echo "Frontend: http://localhost:3121"
 echo -e "\nPress Ctrl+C to stop both servers\n"
 
 # Function to kill both processes on exit
