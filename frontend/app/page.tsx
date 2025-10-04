@@ -14,8 +14,7 @@ import { toast } from 'sonner';
 import useAppStore from '@/lib/store';
 import { PlanetPosition, Location } from '@/lib/types';
 import { format } from 'date-fns';
-import { Sparkles, Sun, Calendar, Star, RefreshCw, BookOpen } from 'lucide-react';
-import Link from 'next/link';
+import { Sparkles, Sun, Calendar, Star, RefreshCw } from 'lucide-react';
 
 export default function Home() {
   const {
@@ -195,11 +194,6 @@ export default function Home() {
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <Link href="/api-docs">
-                <Button variant="ghost" size="icon" className="rounded-full" title="API Documentation">
-                  <BookOpen className="h-5 w-5" />
-                </Button>
-              </Link>
               <ThemeToggle />
               <Button
                 variant="outline"
