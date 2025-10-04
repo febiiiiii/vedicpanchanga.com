@@ -16,21 +16,21 @@ cd drik-panchanga
 ./setup.sh
 
 # Or manual setup:
-# Terminal 1 - Backend
+# Terminal 1 - Backend (runs on port 8121)
 cd backend
 python -m venv venv
 source venv/bin/activate  # Windows: venv\Scripts\activate
 pip install -r requirements.txt
 python api.py
 
-# Terminal 2 - Frontend
+# Terminal 2 - Frontend (runs on port 3121)
 cd frontend
 npm install
-echo "NEXT_PUBLIC_API_URL=http://localhost:8000" > .env.local
+# .env.local is optional - defaults to http://localhost:8121
 npm run dev
 ```
 
-Open http://localhost:3000
+Open http://localhost:3121
 
 ## Features
 
@@ -46,8 +46,8 @@ Open http://localhost:3000
 
 ## API Documentation
 
-Main endpoint: `http://localhost:3000/api/v1/panchanga`
-Full docs: See [API.md](./API.md) • Backend docs: `http://localhost:8000/docs`
+Main endpoint: `http://localhost:3121/api/v1/panchanga`
+Full docs: See [API.md](./API.md) • Backend docs: `http://localhost:8121/docs`
 
 ## License
 

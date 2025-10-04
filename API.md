@@ -6,7 +6,7 @@
 
 `POST /api/v1/panchanga` or `GET /api/v1/panchanga`
 
-Base URL: `http://localhost:3000`
+Base URL: `http://localhost:3121`
 
 #### Request (POST)
 
@@ -131,8 +131,8 @@ GET /api/v1/panchanga?date=2024-10-03T12:00:00.000Z&lat=12.9716&lng=77.5946&city
 
 ## Python Backend Endpoints
 
-Base URL: `http://localhost:8000`
-Full documentation: `http://localhost:8000/docs`
+Base URL: `http://localhost:8121`
+Full documentation: `http://localhost:8121/docs`
 
 ### Available Endpoints
 
@@ -173,7 +173,7 @@ Server error, check backend is running
 ### JavaScript/Fetch
 
 ```javascript
-const response = await fetch('http://localhost:3000/api/v1/panchanga', {
+const response = await fetch('http://localhost:3121/api/v1/panchanga', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({
@@ -192,7 +192,7 @@ const data = await response.json();
 ### cURL
 
 ```bash
-curl -X POST http://localhost:3000/api/v1/panchanga \
+curl -X POST http://localhost:3121/api/v1/panchanga \
   -H "Content-Type: application/json" \
   -d '{
     "date": "2024-10-03T12:00:00.000Z",

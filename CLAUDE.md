@@ -16,14 +16,14 @@ cd backend
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install -r requirements.txt
-python api.py  # Runs on http://localhost:8000
+python api.py  # Runs on http://localhost:8121
 ```
 
 ### Frontend Setup and Run
 ```bash
 cd frontend
 npm install
-npm run dev  # Development server with Turbopack on http://localhost:3000
+npm run dev  # Development server with Turbopack on http://localhost:3121
 npm run build  # Production build
 npm run start  # Production server
 npm run lint  # Run ESLint
@@ -89,7 +89,7 @@ Key endpoints:
 
 Frontend requires `.env.local`:
 ```
-NEXT_PUBLIC_API_URL=http://localhost:8000
+NEXT_PUBLIC_API_URL=http://localhost:8121
 ```
 
 ## Common Development Tasks

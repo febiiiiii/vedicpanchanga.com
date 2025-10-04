@@ -14,7 +14,7 @@ pip install -r requirements.txt
 python api.py
 ```
 
-API documentation available at http://localhost:8000/docs
+API documentation available at http://localhost:8121/docs
 
 ## Features
 
