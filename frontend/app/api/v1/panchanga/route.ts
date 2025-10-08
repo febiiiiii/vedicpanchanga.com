@@ -31,54 +31,70 @@ const formatTime = (time: { hours?: number; minutes?: number } | undefined | nul
   return nextDay ? `${timeStr} (+1)` : timeStr;
 };
 
-// Helper to convert timezone to offset
-const getTimezoneOffset = (timezone: string = 'Asia/Kolkata'): number => {
-  const timezoneOffsets: Record<string, number> = {
-    'Asia/Kolkata': 5.5,
-    'Asia/Calcutta': 5.5,
-    'America/New_York': -5,
-    'America/Los_Angeles': -8,
-    'America/Chicago': -6,
-    'America/Denver': -7,
-    'America/Phoenix': -7,
-    'America/Toronto': -5,
-    'America/Vancouver': -8,
-    'Europe/London': 0,
-    'Europe/Paris': 1,
-    'Asia/Dubai': 4,
-    'Asia/Singapore': 8,
-    'Asia/Tokyo': 9,
-    'Australia/Sydney': 10,
-  };
-
-  // Try to get from mapping, otherwise calculate from current date
-  if (timezone in timezoneOffsets) {
-    return timezoneOffsets[timezone];
-  }
-
-  // Calculate offset from current timezone if possible
+// Helper to convert timezone to offset for a specific date
+const getTimezoneOffset = (timezone: string = 'Asia/Kolkata', date: Date = new Date()): number => {
   try {
-    const date = new Date();
-    const formatter = new Intl.DateTimeFormat('en', {
+    // Use Intl.DateTimeFormat to get the offset for the specific date
+    // This method properly handles DST transitions
+    const formatter = new Intl.DateTimeFormat('en-US', {
       timeZone: timezone,
-      timeZoneName: 'shortOffset'
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      timeZoneName: 'longOffset',
+      hour12: false
     });
+
     const parts = formatter.formatToParts(date);
-    const offset = parts.find(p => p.type === 'timeZoneName')?.value;
-    if (offset && offset.startsWith('GMT')) {
-      const match = offset.match(/GMT([+-]\d{1,2}):?(\d{2})?/);
+    const timeZoneName = parts.find(p => p.type === 'timeZoneName')?.value;
+
+    if (timeZoneName) {
+      // Parse formats like "GMT+5:30", "GMT-8", "GMT+04:00", etc.
+      const match = timeZoneName.match(/GMT([+-])(\d{1,2}):?(\d{2})?/);
       if (match) {
-        const hours = parseInt(match[1]);
-        const minutes = match[2] ? parseInt(match[2]) : 0;
-        return hours + minutes / 60;
+        const sign = match[1] === '+' ? 1 : -1;
+        const hours = parseInt(match[2]);
+        const minutes = match[3] ? parseInt(match[3]) : 0;
+        return sign * (hours + minutes / 60);
       }
     }
-  } catch {
-    console.warn(`Could not determine offset for timezone ${timezone}, using default`);
-  }
 
-  // Default to IST offset if unknown
-  return 5.5;
+    // Fallback: Calculate offset by comparing UTC and local times
+    const utcString = date.toISOString();
+    const localString = date.toLocaleString('en-US', {
+      timeZone: timezone,
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false
+    });
+
+    // Parse the local string
+    const [datePart, timePart] = localString.split(', ');
+    const [month, day, year] = datePart.split('/').map(Number);
+    const [hour, minute, second] = timePart.split(':').map(Number);
+
+    // Create a date in the local timezone (treating it as UTC for calculation)
+    const localDate = new Date(Date.UTC(year, month - 1, day, hour, minute, second));
+
+    // Calculate offset in hours
+    const offsetMs = localDate.getTime() - date.getTime();
+    const offsetHours = offsetMs / (1000 * 60 * 60);
+
+    // Round to nearest 15 minutes (0.25 hours) to handle fractional timezones
+    return Math.round(offsetHours * 4) / 4;
+
+  } catch (error) {
+    console.warn(`Could not determine offset for timezone ${timezone}, using IST default`, error);
+    // Default to IST offset if all methods fail
+    return 5.5;
+  }
 };
 
 export async function OPTIONS() {
@@ -117,17 +133,41 @@ export async function POST(request: NextRequest) {
 
     const parsedDate = new Date(date);
 
+    // Convert to the user's timezone for extraction
+    // parsedDate is in UTC, we need to get components in the user's local timezone
+    const userTimezone = location.timezone || 'America/Vancouver';
+    const userTimeString = parsedDate.toLocaleString('en-US', {
+      timeZone: userTimezone,
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false
+    });
+
+    // Parse the localized string: "MM/DD/YYYY, HH:MM:SS"
+    const [datePart, timePart] = userTimeString.split(', ');
+    const [month, day, year] = datePart.split('/').map(Number);
+    const [hour, minute, second] = timePart.split(':').map(Number);
+
     // Prepare request for Python API
     const apiRequest = {
       date: {
-        year: parsedDate.getFullYear(),
-        month: parsedDate.getMonth() + 1,
-        day: parsedDate.getDate()
+        year,
+        month,
+        day,
+        hour,
+        minute,
+        second
       },
       location: {
         latitude: location.latitude,
         longitude: location.longitude,
-        timezone: getTimezoneOffset(location.timezone)
+        timezone: location.timezone,  // Send timezone name directly
+        city: location.city,
+        country: location.country
       }
     };
 

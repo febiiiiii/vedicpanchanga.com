@@ -8,7 +8,7 @@ Provides endpoints to calculate Hindu calendar panchanga elements
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, validator
 from typing import Optional, List, Tuple
 from datetime import datetime
 import json
@@ -70,19 +70,39 @@ VAARA_LORDS = {
 init_swisseph()
 
 # Pydantic models
+from typing import Union
+import pytz
+from zoneinfo import ZoneInfo
+
 class DateInput(BaseModel):
     year: int = Field(..., description="Year (can be negative for BCE)")
     month: int = Field(..., ge=1, le=12, description="Month (1-12)")
     day: int = Field(..., ge=1, le=31, description="Day (1-31)")
+    hour: int = Field(default=0, ge=0, le=23, description="Hour (0-23)")
+    minute: int = Field(default=0, ge=0, le=59, description="Minute (0-59)")
+    second: int = Field(default=0, ge=0, le=59, description="Second (0-59)")
 
 class LocationInput(BaseModel):
     latitude: float = Field(..., ge=-90, le=90, description="Latitude in decimal degrees")
     longitude: float = Field(..., ge=-180, le=180, description="Longitude in decimal degrees")
-    timezone: float = Field(..., ge=-12, le=14, description="Timezone offset from UTC in hours")
+    timezone: Union[float, str] = Field(..., description="Timezone offset from UTC in hours or timezone name")
+    city: Optional[str] = None
+    country: Optional[str] = None
 
 class PanchangaRequest(BaseModel):
-    date: DateInput
+    date: Union[DateInput, str]  # Accept either DateInput object or ISO string
     location: LocationInput
+
+    @validator('date', pre=True)
+    def validate_date(cls, v):
+        """Allow both DateInput objects and ISO date strings"""
+        if isinstance(v, str):
+            # Return the string as-is for processing in the endpoint
+            return v
+        elif isinstance(v, dict):
+            # Convert dict to DateInput
+            return DateInput(**v)
+        return v
 
 class CitySearchRequest(BaseModel):
     city_name: str = Field(..., description="City name to search")
@@ -188,6 +208,76 @@ def decimal_hours_to_time(decimal_hours: float) -> Tuple[int, int, int]:
     seconds = int((remaining - minutes) * 60)
     return (hours, minutes, seconds)
 
+def get_timezone_offset(timezone_str: str, date_time: datetime) -> float:
+    """Get the UTC offset for a timezone at a specific date/time"""
+    try:
+        # Try using zoneinfo (Python 3.9+)
+        from zoneinfo import ZoneInfo
+        tz = ZoneInfo(timezone_str)
+        offset = date_time.replace(tzinfo=tz).utcoffset()
+        if offset:
+            return offset.total_seconds() / 3600
+    except:
+        pass
+
+    try:
+        # Fallback to pytz
+        import pytz
+        tz = pytz.timezone(timezone_str)
+        localized = tz.localize(date_time)
+        offset = localized.utcoffset()
+        if offset:
+            return offset.total_seconds() / 3600
+    except:
+        pass
+
+    # If timezone string is a number, return it directly
+    try:
+        return float(timezone_str)
+    except:
+        pass
+
+    # Default to IST if all else fails
+    return 5.5
+
+def parse_date_input(date_input: Union[DateInput, str], timezone_info: Union[str, float]) -> Tuple[Date, float, int, int, int]:
+    """Parse date input and return Date object with time components and timezone offset"""
+    if isinstance(date_input, str):
+        # Parse ISO date string
+        dt = datetime.fromisoformat(date_input.replace('Z', '+00:00'))
+
+        # Convert UTC time to local timezone
+        if isinstance(timezone_info, str):
+            try:
+                from zoneinfo import ZoneInfo
+                tz = ZoneInfo(timezone_info)
+                local_dt = dt.astimezone(tz)
+                tz_offset = local_dt.utcoffset().total_seconds() / 3600
+            except:
+                try:
+                    import pytz
+                    tz = pytz.timezone(timezone_info)
+                    local_dt = dt.astimezone(tz)
+                    tz_offset = local_dt.utcoffset().total_seconds() / 3600
+                except:
+                    # Fallback: treat as UTC
+                    local_dt = dt
+                    tz_offset = 0
+        else:
+            # Numeric timezone offset
+            tz_offset = float(timezone_info)
+            # Convert UTC to local time
+            from datetime import timedelta
+            local_dt = dt + timedelta(hours=tz_offset)
+
+        date_obj = Date(local_dt.year, local_dt.month, local_dt.day)
+        return date_obj, tz_offset, local_dt.hour, local_dt.minute, local_dt.second
+    else:
+        # Traditional DateInput object
+        date_obj = Date(date_input.year, date_input.month, date_input.day)
+        tz_offset = float(timezone_info) if isinstance(timezone_info, (int, float)) else get_timezone_offset(timezone_info, datetime(date_input.year, date_input.month, date_input.day, date_input.hour, date_input.minute, date_input.second))
+        return date_obj, tz_offset, date_input.hour, date_input.minute, date_input.second
+
 @app.get("/")
 def read_root():
     """Root endpoint with API information"""
@@ -210,40 +300,50 @@ def calculate_panchanga(request: PanchangaRequest):
     Returns tithi, nakshatra, yoga, karana, vaara, masa, ritu, sunrise/sunset times, etc.
     """
     try:
-        # Create Date and Place objects
-        date_obj = Date(request.date.year, request.date.month, request.date.day)
-        place_obj = Place(request.location.latitude, request.location.longitude, request.location.timezone)
+        # Parse the date input (handles both DateInput objects and ISO strings)
+        date_obj, tz_offset, hour, minute, second = parse_date_input(request.date, request.location.timezone)
+        place_obj = Place(request.location.latitude, request.location.longitude, tz_offset)
 
-        # Convert to Julian Day
-        jd = gregorian_to_jd(date_obj)
+        # JD at midnight (for sunrise/sunset/moonrise/moonset - these expect JD at midnight)
+        jd_midnight = gregorian_to_jd(date_obj)
 
-        # Calculate all panchanga elements
-        ti = tithi(jd, place_obj)
-        nak = nakshatra(jd, place_obj)
-        yog = yoga(jd, place_obj)
-        kar = karana(jd, place_obj)
-        vara = vaara(jd)
-        mas = masa(jd, place_obj)
+        # JD at specified time (for tithi/nakshatra/yoga/karana calculations)
+        decimal_hours = hour + minute / 60.0 + second / 3600.0
+        decimal_hours_utc = decimal_hours - tz_offset
+        jd_at_time = gregorian_to_jd(date_obj, decimal_hours_utc)
+
+        # Calculate panchanga elements using time-specific JD
+        ti = tithi(jd_at_time, place_obj)
+        nak = nakshatra(jd_at_time, place_obj)
+        yog = yoga(jd_at_time, place_obj)
+        kar = karana(jd_at_time, place_obj)
+        # Vaara should be based on local date, not UTC
+        # Add timezone offset to get local JD for day calculation
+        local_jd = jd_at_time + tz_offset / 24.0
+        vara = vaara(local_jd)
+        mas = masa(jd_at_time, place_obj)
         rt = ritu(mas[0])
-        samvat = samvatsara(jd, mas[0])
+        samvat = samvatsara(jd_at_time, mas[0])
 
-        srise = sunrise(jd, place_obj)[1]
-        sset = sunset(jd, place_obj)[1]
-        mrise = moonrise(jd, place_obj)
-        mset = moonset(jd, place_obj)
-        day_dur = day_duration(jd, place_obj)[1]
+        # Calculate sun/moon rise/set using midnight JD
+        srise = sunrise(jd_midnight, place_obj)[1]
+        sset = sunset(jd_midnight, place_obj)[1]
+        mrise = moonrise(jd_midnight, place_obj)
+        mset = moonset(jd_midnight, place_obj)
+        day_dur = day_duration(jd_midnight, place_obj)[1]
 
-        # Calculate muhurta times
-        rahu = rahu_kalam(jd, place_obj)
-        yama = yamaganda_kalam(jd, place_obj)
-        gulika = gulika_kalam(jd, place_obj)
-        abhijit = abhijit_muhurta(jd, place_obj)
+        # Calculate muhurta times using midnight JD
+        rahu = rahu_kalam(jd_midnight, place_obj)
+        yama = yamaganda_kalam(jd_midnight, place_obj)
+        gulika = gulika_kalam(jd_midnight, place_obj)
+        abhijit = abhijit_muhurta(jd_midnight, place_obj)
 
-        # Get ayanamsha
-        ayanamsha = swe.get_ayanamsa_ut(jd)
+        # Get ayanamsha at the specified time
+        ayanamsha = swe.get_ayanamsa_ut(jd_at_time)
 
-        kday = ahargana(jd)
-        kyear, sakayr = elapsed_year(jd, mas[0])
+        # Ahargana and elapsed year use midnight JD (day-based, not time-specific)
+        kday = int(ahargana(jd_midnight))
+        kyear, sakayr = elapsed_year(jd_midnight, mas[0])
 
         # Format response
         response = PanchangaResponse(
@@ -371,16 +471,18 @@ def get_planetary_positions(request: PanchangaRequest):
     Returns positions of all planets in zodiac signs and nakshatras
     """
     try:
-        # Create Date and Place objects
-        date_obj = Date(request.date.year, request.date.month, request.date.day)
-        place_obj = Place(request.location.latitude, request.location.longitude, request.location.timezone)
+        # Parse the date input (handles both DateInput objects and ISO strings)
+        date_obj, tz_offset, hour, minute, second = parse_date_input(request.date, request.location.timezone)
+        place_obj = Place(request.location.latitude, request.location.longitude, tz_offset)
 
-        # Convert to Julian Day
-        jd = gregorian_to_jd(date_obj)
+        # Convert to Julian Day with time (planetary positions are time-specific)
+        decimal_hours = hour + minute / 60.0 + second / 3600.0
+        decimal_hours_utc = decimal_hours - tz_offset
+        jd_at_time = gregorian_to_jd(date_obj, decimal_hours_utc)
 
-        # Get planetary positions
-        positions_raw = planetary_positions(jd, place_obj)
-        ascendant_raw = ascendant(jd, place_obj)
+        # Get planetary positions at the specified time
+        positions_raw = planetary_positions(jd_at_time, place_obj)
+        ascendant_raw = ascendant(jd_at_time, place_obj)
 
         # Format positions
         positions = []
@@ -435,13 +537,15 @@ def get_vimsottari_dasha(request: PanchangaRequest):
     Returns mahadasha periods and current dasha/bhukti
     """
     try:
-        # Create Date and Place objects
-        date_obj = Date(request.date.year, request.date.month, request.date.day)
-        place_obj = Place(request.location.latitude, request.location.longitude, request.location.timezone)
+        # Parse the date input (handles both DateInput objects and ISO strings)
+        date_obj, tz_offset, hour, minute, second = parse_date_input(request.date, request.location.timezone)
+        place_obj = Place(request.location.latitude, request.location.longitude, tz_offset)
 
-        # Convert to Julian Day
-        jd = gregorian_to_jd(date_obj)
-        jd_ut = jd - place_obj.timezone / 24.0
+        # Convert to Julian Day with time (dasha is time-specific)
+        decimal_hours = hour + minute / 60.0 + second / 3600.0
+        decimal_hours_utc = decimal_hours - tz_offset
+        jd_at_time = gregorian_to_jd(date_obj, decimal_hours_utc)
+        jd_ut = jd_at_time - tz_offset / 24.0
 
         # Get mahadasha periods
         mahadashas_raw = vimsottari.vimsottari_mahadasa(jd_ut)
