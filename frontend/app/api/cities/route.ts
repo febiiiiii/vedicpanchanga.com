@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { searchCities, getPopularCities, CITIES_BY_COUNTRY } from '@/lib/world-cities';
+import { logError } from '@/lib/logger';
 
 export async function POST(request: NextRequest) {
   try {
@@ -38,6 +39,21 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(formattedCities);
   } catch (error) {
     console.error('Error searching city:', error);
+
+    // Log error with details
+    const ip = request.headers.get('x-client-ip') ||
+      request.headers.get('x-forwarded-for')?.split(',')[0] ||
+      request.headers.get('x-real-ip') ||
+      'unknown';
+
+    logError({
+      timestamp: new Date().toISOString(),
+      ip,
+      endpoint: request.nextUrl.pathname,
+      error: error instanceof Error ? error.message : 'Failed to search city',
+      stack: error instanceof Error ? error.stack : undefined,
+    });
+
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Failed to search city' },
       { status: 500 }

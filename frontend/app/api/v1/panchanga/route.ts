@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { checkRateLimit } from '@/lib/rate-limiter';
+import { logError, logRequest } from '@/lib/logger';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8121';
 
@@ -102,12 +103,16 @@ export async function OPTIONS() {
 }
 
 export async function POST(request: NextRequest) {
+  const startTime = Date.now();
+  let status = 200;
+
   try {
     // Check rate limit
     const rateLimitResult = await checkRateLimit(request);
 
     if (!rateLimitResult.success) {
-      return NextResponse.json(
+      status = 429;
+      const response = NextResponse.json(
         { error: 'Too many requests. Please try again later.' },
         {
           status: 429,
@@ -119,6 +124,10 @@ export async function POST(request: NextRequest) {
           }
         }
       );
+
+      // Log rate-limited request
+      logRequestData(request, status, startTime);
+      return response;
     }
 
     const body = await request.json();
@@ -300,10 +309,32 @@ export async function POST(request: NextRequest) {
       }
     };
 
+    // Log successful request
+    logRequestData(request, status, startTime);
+
     return NextResponse.json(response, { headers: corsHeaders });
 
   } catch (error) {
+    status = 500;
     console.error('API Error:', error);
+
+    // Log error with details
+    const ip = request.headers.get('x-client-ip') ||
+      request.headers.get('x-forwarded-for')?.split(',')[0] ||
+      request.headers.get('x-real-ip') ||
+      'unknown';
+
+    logError({
+      timestamp: new Date().toISOString(),
+      ip,
+      endpoint: request.nextUrl.pathname,
+      error: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined,
+    });
+
+    // Log failed request
+    logRequestData(request, status, startTime);
+
     return NextResponse.json(
       {
         error: error instanceof Error ? error.message : 'Internal server error',
@@ -334,4 +365,42 @@ export async function GET(request: NextRequest) {
   });
 
   return POST(req as NextRequest);
+}
+
+// Helper function to log request data
+function logRequestData(request: NextRequest, status: number, startTime: number): void {
+  const ip = request.headers.get('x-client-ip') ||
+    request.headers.get('cf-connecting-ip') ||
+    request.headers.get('x-forwarded-for')?.split(',')[0] ||
+    request.headers.get('x-real-ip') ||
+    'unknown';
+
+  const country = request.headers.get('x-client-country') ||
+    request.headers.get('cf-ipcountry') ||
+    undefined;
+
+  const duration = (Date.now() - startTime) / 1000; // seconds
+
+  // Cloudflare headers
+  const cfRay = request.headers.get('x-cf-ray') || request.headers.get('cf-ray') || undefined;
+  const cfCacheStatus = request.headers.get('x-cf-cache-status') || request.headers.get('cf-cache-status') || undefined;
+  const cfDeviceType = request.headers.get('x-cf-device-type') || request.headers.get('cf-device-type') || undefined;
+  const protocol = request.headers.get('x-protocol') || undefined;
+
+  logRequest({
+    timestamp: new Date().toISOString(),
+    ip,
+    country,
+    method: request.method,
+    endpoint: request.nextUrl.pathname,
+    query: request.nextUrl.search || '',
+    referrer: request.headers.get('referer') || '',
+    userAgent: request.headers.get('user-agent') || '',
+    status,
+    duration,
+    cfRay,
+    cfCacheStatus,
+    cfDeviceType,
+    protocol,
+  });
 }

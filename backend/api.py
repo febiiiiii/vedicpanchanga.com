@@ -317,10 +317,8 @@ def calculate_panchanga(request: PanchangaRequest):
         nak = nakshatra(jd_at_time, place_obj)
         yog = yoga(jd_at_time, place_obj)
         kar = karana(jd_at_time, place_obj)
-        # Vaara should be based on local date, not UTC
-        # Add timezone offset to get local JD for day calculation
-        local_jd = jd_at_time + tz_offset / 24.0
-        vara = vaara(local_jd)
+        # Vaara (weekday) is date-based, not time-based - use midnight JD
+        vara = vaara(jd_midnight)
         mas = masa(jd_at_time, place_obj)
         rt = ritu(mas[0])
         samvat = samvatsara(jd_at_time, mas[0])
