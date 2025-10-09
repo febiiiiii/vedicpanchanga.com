@@ -1,0 +1,11 @@
+2025-10-09T03:48:35.350Z | IP=2607:5300:205:200::217d | ENDPOINT=/api/v1/panchanga | ERROR=Failed to calculate panchanga | STACK=Error: Failed to calculate panchanga
+    at T (/apps/panchanga/frontend/.next/server/chunks/[root-of-the-server]__a0559436._.js:1:4121)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async rN.do (/apps/panchanga/frontend/node_modules/next/dist/compiled/next-server/app-route-turbo.runtime.prod.js:5:21042)
+    at async rN.handle (/apps/panchanga/frontend/node_modules/next/dist/compiled/next-server/app-route-turbo.runtime.prod.js:5:25860)
+    at async d (/apps/panchanga/frontend/.next/server/chunks/[root-of-the-server]__a0559436._.js:1:9228)
+    at async rN.handleResponse (/apps/panchanga/frontend/node_modules/next/dist/compiled/next-server/app-route-turbo.runtime.prod.js:1:105612)
+    at async o (/apps/panchanga/frontend/.next/server/chunks/[root-of-the-server]__a0559436._.js:1:10260)
+    at async q (/apps/panchanga/frontend/.next/server/chunks/[root-of-the-server]__a0559436._.js:1:11393)
+    at async NextNodeServer.renderToResponseWithComponentsImpl (/apps/panchanga/frontend/node_modules/next/dist/server/base-server.js:1422:9)
+    at async NextNodeServer.renderPageComponent (/apps/panchanga/frontend/node_modules/next/dist/server/base-server.js:1474:24)
