@@ -44,6 +44,41 @@ Open http://localhost:3121
 **Backend**: Python • FastAPI • PySwisseph
 **Frontend**: Next.js 15 • React 19 • TypeScript • Tailwind CSS v4 • Shadcn/ui
 
+## Project Structure
+
+```
+drik-panchanga/
+├── backend/          # Python FastAPI server (port 8121)
+├── frontend/         # Next.js 15 application (port 3121)
+├── infra/           # Deployment scripts and infrastructure
+├── tests/           # Testing and verification scripts
+├── API.md           # API documentation
+├── CLAUDE.md        # AI assistant instructions
+└── README.md        # This file
+```
+
+## Testing
+
+The `tests/` directory contains various testing and verification scripts:
+
+```bash
+# API Testing
+python tests/test_api.py                    # Basic API tests
+./tests/verify_apis.sh                      # Verify API endpoints
+
+# Timezone Testing
+python tests/test_timezones.py              # Test timezone calculations
+./tests/test_all_timezones.sh               # Test all timezone scenarios
+./tests/verify_timezones.py                 # Verify timezone accuracy
+
+# Load Testing
+python tests/stress_test_panchanga.py       # Stress test calculations
+python tests/stress_test_rate_limited.py    # Test rate limiting
+
+# Production Testing
+./tests/test_production_api.sh              # Test production deployment
+```
+
 ## API Documentation
 
 Main endpoint: `http://localhost:3121/api/v1/panchanga`

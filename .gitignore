@@ -55,3 +55,14 @@ Thumbs.db
 .env
 *.bak
 *.tmp
+
+# Logs
+logs/
+*.log
+
+# Tests
+tests/__pycache__/
+tests/*.py[cod]
+tests/.pytest_cache/
+tests/.coverage
+tests/*.log

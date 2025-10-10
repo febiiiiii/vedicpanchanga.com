@@ -69,7 +69,7 @@ User=ubuntu
 Group=ubuntu
 WorkingDirectory=/apps/panchanga/backend
 Environment=PATH=/apps/panchanga/backend/venv/bin:/usr/bin:/bin
-ExecStart=/apps/panchanga/backend/venv/bin/uvicorn api:app --host 127.0.0.1 --port 8000
+ExecStart=/apps/panchanga/backend/venv/bin/uvicorn api:app --host 127.0.0.1 --port 8121
 Restart=always
 RestartSec=10
 
@@ -90,7 +90,7 @@ npm run build
 # Create .env.local
 cat > .env.local <<'EOF'
 NEXT_PUBLIC_API_URL=http://localhost:8121
-PORT=3001
+PORT=3121
 EOF
 
 # Create frontend service
@@ -105,7 +105,7 @@ User=ubuntu
 Group=ubuntu
 WorkingDirectory=/apps/panchanga/frontend
 Environment=PATH=/usr/bin:/bin
-Environment=PORT=3001
+Environment=PORT=3121
 Environment=NODE_ENV=production
 ExecStart=/usr/bin/npm start
 Restart=always
@@ -130,7 +130,7 @@ server {
 
     # Frontend
     location / {
-        proxy_pass http://localhost:3001;
+        proxy_pass http://localhost:3121;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -139,7 +139,7 @@ server {
 
     # API v1 routes - through Next.js
     location /api/v1/ {
-        proxy_pass http://localhost:3001;
+        proxy_pass http://localhost:3121;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -189,6 +189,10 @@ echo "Services status:"
 systemctl status panchanga-backend --no-pager -l
 echo ""
 systemctl status panchanga-frontend --no-pager -l
+echo ""
+echo "Ports:"
+echo "  Frontend: 3121"
+echo "  Backend:  8121 (localhost only)"
 echo ""
 echo "Next steps:"
 echo "1. Point your domain DNS to this server IP"
