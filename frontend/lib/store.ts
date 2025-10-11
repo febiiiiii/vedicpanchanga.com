@@ -29,10 +29,6 @@ interface AppState {
   language: 'en' | 'sa' | 'hi';
   setLanguage: (lang: 'en' | 'sa' | 'hi') => void;
 
-  // Recent locations
-  recentLocations: Location[];
-  addRecentLocation: (location: Location) => void;
-
   // Saved profiles
   savedProfiles: UserProfile[];
   addSavedProfile: (profile: UserProfile) => void;
@@ -46,24 +42,15 @@ const useAppStore = create<AppState>()(
       userProfile: null,
       setUserProfile: (profile) => set({ userProfile: profile }),
 
-      // Current location
+      // Current location - Default to Ujjain (spiritual city of India)
       currentLocation: {
-        latitude: 12.9716,
-        longitude: 77.5946,
+        latitude: 23.1765,
+        longitude: 75.7885,
         timezone: 'Asia/Kolkata',
-        city: 'Bangalore',
+        city: 'Ujjain',
         country: 'India'
       },
-      setCurrentLocation: (location) =>
-        set((state) => ({
-          currentLocation: location,
-          recentLocations: [
-            location,
-            ...state.recentLocations.filter(
-              l => l.city !== location.city || l.country !== location.country
-            ).slice(0, 4)
-          ]
-        })),
+      setCurrentLocation: (location) => set({ currentLocation: location }),
 
       // Selected date
       selectedDate: new Date(),
@@ -82,40 +69,6 @@ const useAppStore = create<AppState>()(
 
       language: 'en',
       setLanguage: (lang) => set({ language: lang }),
-
-      // Recent locations
-      recentLocations: [
-        {
-          latitude: 12.9716,
-          longitude: 77.5946,
-          timezone: 'Asia/Kolkata',
-          city: 'Bangalore',
-          country: 'India'
-        },
-        {
-          latitude: 28.6139,
-          longitude: 77.2090,
-          timezone: 'Asia/Kolkata',
-          city: 'New Delhi',
-          country: 'India'
-        },
-        {
-          latitude: 19.0760,
-          longitude: 72.8777,
-          timezone: 'Asia/Kolkata',
-          city: 'Mumbai',
-          country: 'India'
-        }
-      ],
-      addRecentLocation: (location) =>
-        set((state) => ({
-          recentLocations: [
-            location,
-            ...state.recentLocations.filter(
-              l => l.city !== location.city || l.country !== location.country
-            ).slice(0, 4)
-          ]
-        })),
 
       // Saved profiles
       savedProfiles: [],
@@ -136,7 +89,6 @@ const useAppStore = create<AppState>()(
         theme: state.theme,
         chartStyle: state.chartStyle,
         language: state.language,
-        recentLocations: state.recentLocations,
         savedProfiles: state.savedProfiles
       })
     }

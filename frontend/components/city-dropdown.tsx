@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { Check, ChevronsUpDown, MapPin, Loader2, Globe } from 'lucide-react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Check, ChevronsUpDown, MapPin, Globe, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import {
@@ -17,10 +17,9 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { Badge } from '@/components/ui/badge';
 import useAppStore from '@/lib/store';
 import type { Location } from '@/lib/types';
-import { searchCities, getPopularCities, City } from '@/lib/world-cities';
+import { getPopularCities, searchCities, City } from '@/lib/world-cities';
 import debounce from 'lodash/debounce';
 
 interface CityDropdownProps {
@@ -29,103 +28,132 @@ interface CityDropdownProps {
 }
 
 export function CityDropdown({ onLocationChange, className }: CityDropdownProps) {
-  const { currentLocation, setCurrentLocation, recentLocations, addRecentLocation } = useAppStore();
+  const { currentLocation, setCurrentLocation } = useAppStore();
 
   const [open, setOpen] = useState(false);
   const [searchValue, setSearchValue] = useState('');
   const [searchResults, setSearchResults] = useState<City[]>([]);
   const [popularCities] = useState<City[]>(getPopularCities());
-  const [isDetecting, setIsDetecting] = useState(false);
+  const [isSearching, setIsSearching] = useState(false);
 
-  // Debounced search
-  const performSearch = React.useCallback((query: string) => {
-    const debouncedFn = debounce(() => {
-      if (query.length >= 2) {
-        const results = searchCities(query);
-        setSearchResults(results);
-      } else {
-        setSearchResults([]);
+  // Get timezone from coordinates
+  const getTimezoneFromCoords = async (lat: number, lon: number): Promise<string> => {
+    try {
+      const response = await fetch(
+        `https://timeapi.io/api/TimeZone/coordinate?latitude=${lat}&longitude=${lon}`
+      );
+      if (response.ok) {
+        const data = await response.json();
+        return data.timeZone || Intl.DateTimeFormat().resolvedOptions().timeZone;
       }
-    }, 300);
-    debouncedFn();
-  }, []);
+    } catch (error) {
+      console.error('Error getting timezone:', error);
+    }
+    return Intl.DateTimeFormat().resolvedOptions().timeZone;
+  };
 
+  // Search cities (local first, then Nominatim API) - only get timezone on selection
   useEffect(() => {
-    performSearch(searchValue);
-  }, [searchValue, performSearch]);
+    const search = debounce(async (query: string) => {
+      if (query.length < 2) {
+        setSearchResults([]);
+        setIsSearching(false);
+        return;
+      }
 
-  const handleSelectCity = (city: City) => {
+      // First, search in local cities (instant results)
+      const localResults = searchCities(query);
+
+      // Set local results immediately
+      setSearchResults(localResults);
+
+      // Then fetch from Nominatim API for additional results
+      setIsSearching(true);
+      try {
+        const response = await fetch(
+          `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=10&addressdetails=1`,
+          { headers: { 'User-Agent': 'VedicPanchanga/1.0' } }
+        );
+
+        if (!response.ok) {
+          setIsSearching(false);
+          return; // Keep local results
+        }
+
+        const results = await response.json();
+        // Don't fetch timezone for all results - only when selected
+        const apiCities: City[] = results
+          .filter((r: { lat: string; lon: string }) => r.lat && r.lon)
+          .slice(0, 5)
+          .map((r: {
+            lat: string;
+            lon: string;
+            address?: { city?: string; town?: string; village?: string; state?: string; country?: string };
+            display_name: string;
+          }) => {
+            const lat = parseFloat(r.lat);
+            const lon = parseFloat(r.lon);
+            const name = r.address?.city || r.address?.town || r.address?.village ||
+                        r.address?.state || r.display_name.split(',')[0];
+
+            return {
+              name,
+              country: r.address?.country || '',
+              latitude: lat,
+              longitude: lon,
+              timezone: Intl.DateTimeFormat().resolvedOptions().timeZone, // Use browser timezone as placeholder
+            };
+          });
+
+        // Combine local and API results, removing duplicates
+        const combinedResults = [...localResults];
+        apiCities.forEach(apiCity => {
+          if (!combinedResults.some(local =>
+            local.name.toLowerCase() === apiCity.name.toLowerCase() &&
+            local.country.toLowerCase() === apiCity.country.toLowerCase()
+          )) {
+            combinedResults.push(apiCity);
+          }
+        });
+
+        setSearchResults(combinedResults);
+        setIsSearching(false);
+      } catch (error) {
+        console.error('Error searching cities:', error);
+        setIsSearching(false);
+        // Keep local results on error
+      }
+    }, 500);
+
+    search(searchValue);
+
+    return () => {
+      search.cancel();
+    };
+  }, [searchValue]);
+
+  const handleSelectCity = useCallback(async (city: City) => {
+    // Get accurate timezone when city is selected
+    const timezone = await getTimezoneFromCoords(city.latitude, city.longitude);
+
     const location: Location = {
       latitude: city.latitude,
       longitude: city.longitude,
-      timezone: city.timezone,
+      timezone,
       city: city.name,
       country: city.country
     };
 
     setCurrentLocation(location);
-    addRecentLocation(location);
     onLocationChange?.(location);
     setOpen(false);
     setSearchValue('');
-  };
+  }, [setCurrentLocation, onLocationChange]);
 
-  const detectCurrentLocation = async () => {
-    setIsDetecting(true);
-
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        async (position) => {
-          const { latitude, longitude } = position.coords;
-
-          try {
-            const response = await fetch(
-              `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=10&addressdetails=1`,
-              {
-                headers: {
-                  'User-Agent': 'VedicPanchanga/1.0'
-                }
-              }
-            );
-
-            let city = 'Current Location';
-            let country = '';
-
-            if (response.ok) {
-              const data = await response.json();
-              city = data.address.city || data.address.town || data.address.village || data.address.state || 'Current Location';
-              country = data.address.country || '';
-            }
-
-            const location: Location = {
-              latitude,
-              longitude,
-              timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-              city,
-              country
-            };
-
-            setCurrentLocation(location);
-            addRecentLocation(location);
-            onLocationChange?.(location);
-            setIsDetecting(false);
-          } catch (error) {
-            console.error('Error getting location details:', error);
-            setIsDetecting(false);
-          }
-        },
-        (error) => {
-          console.error('Error detecting location:', error);
-          setIsDetecting(false);
-        }
-      );
-    }
-  };
-
-  // Group cities by country
+  // Group cities by country (only for search results)
   const citiesByCountry = React.useMemo(() => {
     const grouped: Record<string, City[]> = {};
-    [...searchResults, ...popularCities].forEach(city => {
+    searchResults.forEach(city => {
       if (!grouped[city.country]) {
         grouped[city.country] = [];
       }
@@ -134,7 +162,7 @@ export function CityDropdown({ onLocationChange, className }: CityDropdownProps)
       }
     });
     return grouped;
-  }, [searchResults, popularCities]);
+  }, [searchResults]);
 
   // Format location display
   const locationDisplay = currentLocation
@@ -167,128 +195,59 @@ export function CityDropdown({ onLocationChange, className }: CityDropdownProps)
             />
             <CommandEmpty>No city found. Try a different search.</CommandEmpty>
 
-            {/* Current Location Button */}
-            <CommandGroup>
-              <CommandItem
-                onSelect={() => detectCurrentLocation()}
-                className="cursor-pointer"
-                disabled={isDetecting}
-              >
-                {isDetecting ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Detecting location...
-                  </>
-                ) : (
-                  <>
-                    <MapPin className="mr-2 h-4 w-4" />
-                    Use Current Location
-                  </>
-                )}
-              </CommandItem>
-            </CommandGroup>
-
-            <CommandSeparator />
-
-            {/* Recent Locations */}
-            {recentLocations.length > 0 && !searchValue && (
-              <>
-                <CommandGroup heading="Recent">
-                  {recentLocations.slice(0, 3).map((location, index) => (
-                    <CommandItem
-                      key={`recent-${index}`}
-                      value={`${location.city}-${location.country}`}
-                      onSelect={() => {
-                        setCurrentLocation(location);
-                        onLocationChange?.(location);
-                        setOpen(false);
-                      }}
-                    >
-                      <Check
-                        className={cn(
-                          "mr-2 h-4 w-4",
-                          currentLocation?.city === location.city ? "opacity-100" : "opacity-0"
-                        )}
-                      />
-                      <div className="flex items-center justify-between w-full">
-                        <span>{location.city}</span>
-                        <span className="text-xs text-muted-foreground">
-                          {location.country}
-                        </span>
-                      </div>
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
-                <CommandSeparator />
-              </>
-            )}
-
             {/* Search Results or Popular Cities */}
             {searchValue.length >= 2 ? (
-              // Show search results
-              Object.entries(citiesByCountry).map(([country, cities]) => (
-                <CommandGroup key={country} heading={country}>
-                  {cities.map((city) => (
-                    <CommandItem
-                      key={`${city.name}-${city.country}`}
-                      value={`${city.name}-${city.country}`}
-                      onSelect={() => handleSelectCity(city)}
-                    >
-                      <Check
-                        className={cn(
-                          "mr-2 h-4 w-4",
-                          currentLocation?.city === city.name ? "opacity-100" : "opacity-0"
-                        )}
-                      />
-                      <div className="flex items-center justify-between w-full">
+              <>
+                {Object.entries(citiesByCountry).map(([country, cities]) => (
+                  <CommandGroup key={country} heading={country}>
+                    {cities.map((city) => (
+                      <CommandItem
+                        key={`${city.name}-${city.country}`}
+                        value={`${city.name}-${city.country}`}
+                        onSelect={() => handleSelectCity(city)}
+                      >
+                        <Check
+                          className={cn(
+                            "mr-2 h-4 w-4",
+                            currentLocation?.city === city.name ? "opacity-100" : "opacity-0"
+                          )}
+                        />
                         <span>{city.name}</span>
-                        {city.population && (
-                          <Badge variant="secondary" className="ml-2 text-xs">
-                            {(city.population / 1000000).toFixed(1)}M
-                          </Badge>
-                        )}
-                      </div>
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
-              ))
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                ))}
+                {isSearching && (
+                  <div className="flex items-center justify-center gap-2 p-3 text-xs text-muted-foreground">
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                    <span>Searching worldwide...</span>
+                  </div>
+                )}
+              </>
             ) : (
               // Show popular cities when not searching
-              <>
-                <CommandGroup heading="Popular Cities">
-                  {popularCities.map((city) => (
-                    <CommandItem
-                      key={`popular-${city.name}-${city.country}`}
-                      value={`${city.name}-${city.country}`}
-                      onSelect={() => handleSelectCity(city)}
-                    >
-                      <Check
-                        className={cn(
-                          "mr-2 h-4 w-4",
-                          currentLocation?.city === city.name ? "opacity-100" : "opacity-0"
-                        )}
-                      />
-                      <div className="flex items-center justify-between w-full">
-                        <div>
-                          <span>{city.name}</span>
-                          <span className="text-xs text-muted-foreground ml-2">
-                            {city.country}
-                          </span>
-                        </div>
-                      </div>
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
-
+              <CommandGroup heading="Popular Cities">
+                {popularCities.map((city) => (
+                  <CommandItem
+                    key={`${city.name}-${city.country}`}
+                    value={`${city.name}-${city.country}`}
+                    onSelect={() => handleSelectCity(city)}
+                  >
+                    <Check
+                      className={cn(
+                        "mr-2 h-4 w-4",
+                        currentLocation?.city === city.name ? "opacity-100" : "opacity-0"
+                      )}
+                    />
+                    <span>{city.name}</span>
+                    <span className="text-xs text-muted-foreground ml-2">{city.country}</span>
+                  </CommandItem>
+                ))}
                 <CommandSeparator />
-
-                {/* All Cities by Region */}
-                <CommandGroup heading="All Cities">
-                  <div className="p-2 text-xs text-muted-foreground">
-                    Type at least 2 characters to search all cities
-                  </div>
-                </CommandGroup>
-              </>
+                <div className="p-2 text-xs text-muted-foreground text-center">
+                  Type 2+ characters to search worldwide
+                </div>
+              </CommandGroup>
             )}
           </Command>
         </PopoverContent>

@@ -228,6 +228,123 @@ export function PanchangaCard({ panchanga }: PanchangaCardProps) {
 
         <Separator className="my-6" />
 
+        {/* Vedic Calendar Info */}
+        {panchanga.calendar && (
+          <>
+            <div>
+              <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                <Calendar className="h-5 w-5 text-primary" />
+                Vedic Calendar
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                {/* Masa */}
+                {panchanga.calendar.masa && typeof panchanga.calendar.masa === 'object' && (
+                  <div className="p-4 rounded-lg border bg-gradient-to-br from-violet-50/50 to-transparent dark:from-violet-950/20">
+                    <div className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Māsa (Month)</div>
+                    <div className="text-lg font-semibold text-violet-700 dark:text-violet-400">
+                      {panchanga.calendar.masa.name}
+                    </div>
+                    {panchanga.calendar.masa.is_leap && (
+                      <Badge variant="secondary" className="mt-2 text-xs">Adhika (Leap)</Badge>
+                    )}
+                  </div>
+                )}
+
+                {/* Ritu */}
+                {panchanga.calendar.ritu && typeof panchanga.calendar.ritu === 'object' && (
+                  <div className="p-4 rounded-lg border bg-gradient-to-br from-emerald-50/50 to-transparent dark:from-emerald-950/20">
+                    <div className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Ṛitu (Season)</div>
+                    <div className="text-lg font-semibold text-emerald-700 dark:text-emerald-400">
+                      {panchanga.calendar.ritu.name}
+                    </div>
+                  </div>
+                )}
+
+                {/* Samvatsara */}
+                {panchanga.calendar.samvatsara && typeof panchanga.calendar.samvatsara === 'object' && (
+                  <div className="p-4 rounded-lg border bg-gradient-to-br from-amber-50/50 to-transparent dark:from-amber-950/20">
+                    <div className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Saṃvatsara (Year)</div>
+                    <div className="text-lg font-semibold text-amber-700 dark:text-amber-400">
+                      {panchanga.calendar.samvatsara.name}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+            <Separator className="my-6" />
+          </>
+        )}
+
+        {/* Ascendant & Dasha Info */}
+        {(panchanga.ascendant || panchanga.dasha) && (
+          <>
+            <div>
+              <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                <span className="text-primary">⚹</span>
+                Birth Chart Details
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Ascendant */}
+                {panchanga.ascendant && (
+                  <div className="p-4 rounded-lg border bg-gradient-to-br from-indigo-50 to-blue-50 dark:from-indigo-950/30 dark:to-blue-950/30">
+                    <div className="text-xs text-muted-foreground uppercase tracking-wide mb-2">Lagna (Ascendant)</div>
+                    <div className="space-y-2">
+                      <div>
+                        <span className="text-2xl font-bold text-indigo-700 dark:text-indigo-400">
+                          {panchanga.ascendant.zodiac_sign}
+                        </span>
+                      </div>
+                      <div className="text-sm space-y-1">
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Longitude:</span>
+                          <span className="font-mono font-semibold">{panchanga.ascendant.longitude.toFixed(4)}°</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Nakshatra:</span>
+                          <span className="font-semibold">{panchanga.ascendant.nakshatra}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Pada:</span>
+                          <Badge variant="secondary">{panchanga.ascendant.pada}</Badge>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Current Dasha */}
+                {panchanga.dasha && (
+                  <div className="p-4 rounded-lg border bg-gradient-to-br from-rose-50 to-pink-50 dark:from-rose-950/30 dark:to-pink-950/30">
+                    <div className="text-xs text-muted-foreground uppercase tracking-wide mb-2">Current Mahādaśā</div>
+                    <div className="space-y-2">
+                      <div>
+                        <span className="text-2xl font-bold text-rose-700 dark:text-rose-400">
+                          {panchanga.dasha.planet}
+                        </span>
+                      </div>
+                      <div className="text-sm space-y-1">
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Start:</span>
+                          <span className="font-semibold">{panchanga.dasha.start_date}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">End:</span>
+                          <span className="font-semibold">{panchanga.dasha.end_date}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-muted-foreground">Duration:</span>
+                          <span className="font-semibold">{panchanga.dasha.duration} years</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+            <Separator className="my-6" />
+          </>
+        )}
+
         {/* Ayanamsha */}
         <div className="flex justify-between items-center p-4 rounded-lg bg-muted/50">
           <div className="flex items-center gap-2">

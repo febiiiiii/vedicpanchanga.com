@@ -72,6 +72,39 @@ export interface PlanetPosition {
   navashaRashi?: string;
 }
 
+export interface Masa {
+  index: number;
+  name: string;
+  is_leap: boolean;
+}
+
+export interface Ritu {
+  index: number;
+  name: string;
+}
+
+export interface Samvatsara {
+  index?: number;
+  name: string;
+}
+
+export interface Ascendant {
+  zodiac_sign: string;
+  zodiac_index: number;
+  longitude: number;
+  nakshatra: string;
+  nakshatra_index: number;
+  pada: number;
+}
+
+export interface CurrentDasha {
+  planet: string;
+  planet_index: number;
+  start_date: string;
+  end_date: string;
+  duration: number;
+}
+
 export interface Panchanga {
   date: Date;
   location: Location;
@@ -97,13 +130,15 @@ export interface Panchanga {
     gulikaKala?: TimeRange;
   };
   calendar?: {
-    masa?: string;
-    ritu?: string;
-    samvatsara?: string;
+    masa?: Masa | string;
+    ritu?: Ritu | string;
+    samvatsara?: Samvatsara | string;
     ayanamsha?: number;
     sakaYear?: number;
     kaliYear?: number;
   };
+  ascendant?: Ascendant;
+  dasha?: CurrentDasha;
   api?: {
     version: string;
     timestamp: string;
