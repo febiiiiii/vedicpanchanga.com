@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   // Extract request information and add to headers for API routes to log
   // Priority: CF-Connecting-IP (Cloudflare) > X-Forwarded-For > X-Real-IP
   const ip = request.headers.get('cf-connecting-ip') ||

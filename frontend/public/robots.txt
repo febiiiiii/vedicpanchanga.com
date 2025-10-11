@@ -1,0 +1,11 @@
+# Robots.txt for Vedic Panchanga
+# Allow all search engines to crawl the site
+
+User-agent: *
+Allow: /
+
+# Disallow API routes and private directories
+Disallow: /api/
+
+# Sitemap location
+Sitemap: https://vedicpanchanga.com/sitemap.xml

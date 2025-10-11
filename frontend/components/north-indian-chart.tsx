@@ -22,9 +22,11 @@ export function NorthIndianChart({ chartImage }: NorthIndianChartProps) {
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={chartImage}
-              alt="North Indian Birth Chart"
+              alt="North Indian Birth Chart showing planetary positions in houses"
               className="max-w-full h-auto rounded-lg shadow-lg"
               style={{ maxHeight: "600px" }}
+              loading="lazy"
+              decoding="async"
             />
           </div>
         ) : (
