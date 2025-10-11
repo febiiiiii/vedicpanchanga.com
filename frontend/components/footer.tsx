@@ -1,4 +1,4 @@
-import { Github } from 'lucide-react';
+import { Github, Mail } from 'lucide-react';
 
 export function Footer() {
   return (
@@ -11,7 +11,7 @@ export function Footer() {
           <p>
             Calculations are approximate and for general guidance only
           </p>
-          <p className="flex items-center justify-center gap-1 pt-1">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 pt-1">
             <a
               href="https://github.com/bidyashish/vedicpanchanga.com"
               target="_blank"
@@ -21,7 +21,14 @@ export function Footer() {
               <Github className="h-3.5 w-3.5" />
               <span>Open Source Project</span>
             </a>
-          </p>
+            <a
+              href="mailto:support@vedicpanchanga.com"
+              className="inline-flex items-center gap-1 hover:text-foreground transition-colors underline-offset-4 hover:underline"
+            >
+              <Mail className="h-3.5 w-3.5" />
+              <span>support@vedicpanchanga.com</span>
+            </a>
+          </div>
         </div>
       </div>
     </footer>

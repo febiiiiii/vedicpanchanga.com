@@ -7,7 +7,12 @@ import {
   generateMetadata as generateSEOMetadata,
   generateWebsiteSchema,
   generateWebApplicationSchema,
-  generateOrganizationSchema
+  generateOrganizationSchema,
+  generateSoftwareApplicationSchema,
+  generateFAQSchema,
+  generateHowToCalculatePanchangaSchema,
+  generateServiceSchema,
+  generateDataCatalogSchema
 } from "@/lib/seo";
 
 const geistSans = Geist({
@@ -39,10 +44,22 @@ export default function RootLayout({
   const websiteSchema = generateWebsiteSchema();
   const webAppSchema = generateWebApplicationSchema();
   const orgSchema = generateOrganizationSchema();
+  const softwareAppSchema = generateSoftwareApplicationSchema();
+  const faqSchema = generateFAQSchema();
+  const howToSchema = generateHowToCalculatePanchangaSchema();
+  const serviceSchema = generateServiceSchema();
+  const dataCatalogSchema = generateDataCatalogSchema();
 
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        {/* Google AdSense */}
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5806576477282997"
+          crossOrigin="anonymous"
+        />
+
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
@@ -54,6 +71,26 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(orgSchema) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareAppSchema) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(howToSchema) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(dataCatalogSchema) }}
         />
       </head>
       <body
@@ -79,6 +116,17 @@ export default function RootLayout({
           data-website-id="76c15b44-bdc2-4222-ac33-1ad5e9795bd1"
           strategy="afterInteractive"
         />
+
+        {/* Microsoft Clarity */}
+        <Script id="microsoft-clarity" strategy="afterInteractive">
+          {`
+            (function(c,l,a,r,i,t,y){
+                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+            })(window, document, "clarity", "script", "tod4sp5ji9");
+          `}
+        </Script>
 
         <ThemeProvider
           attribute="class"

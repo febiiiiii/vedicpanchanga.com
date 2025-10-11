@@ -1,6 +1,6 @@
 import posthog from "posthog-js";
-
-posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY!, {
+// PostHog initialization NEXT_PUBLIC_POSTHOG_KEY
+posthog.init('phc_DCvNPIvppVcLFFmJ9iMAjcp8D8EQOHtL2a4acP3G2Ci', {
   api_host: "/ingest",
   ui_host: "https://us.posthog.com",
   defaults: '2025-05-24',
