@@ -73,6 +73,13 @@ export default function RootLayout({
           `}
         </Script>
 
+        {/* Umami Analytics */}
+        <Script
+          src="https://cloud.umami.is/script.js"
+          data-website-id="76c15b44-bdc2-4222-ac33-1ad5e9795bd1"
+          strategy="afterInteractive"
+        />
+
         <ThemeProvider
           attribute="class"
           defaultTheme="light"
