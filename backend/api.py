@@ -6,24 +6,52 @@ FastAPI REST API for Drik Panchanga calculations
 Provides endpoints to calculate Hindu calendar panchanga elements
 """
 
-from fastapi import FastAPI, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel, Field, validator
-from typing import Optional, List, Tuple
-from datetime import datetime
+# Standard library imports
 import json
 import re
+from datetime import datetime, timedelta
+from typing import Dict, List, Optional, Tuple, Union
+from zoneinfo import ZoneInfo
 
-from panchanga import (
-    tithi, nakshatra, yoga, karana, vaara, masa, ritu,
-    sunrise, sunset, moonrise, moonset, day_duration, ahargana, elapsed_year, samvatsara,
-    rahu_kalam, yamaganda_kalam, gulika_kalam, abhijit_muhurta,
-    planetary_positions, ascendant,
-    gregorian_to_jd, jd_to_gregorian, init_swisseph, get_planet_name,
-    Place, Date
-)
-import vimsottari
+# Third-party imports
+import pytz
 import swisseph as swe
+from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel, Field, field_validator
+
+# Local imports
+import vimsottari
+from chart_generator import NorthIndianChart
+from panchanga import (
+    Date,
+    Place,
+    abhijit_muhurta,
+    ahargana,
+    ascendant,
+    day_duration,
+    elapsed_year,
+    get_planet_name,
+    gregorian_to_jd,
+    gulika_kalam,
+    init_swisseph,
+    jd_to_gregorian,
+    karana,
+    masa,
+    moonrise,
+    moonset,
+    nakshatra,
+    planetary_positions,
+    rahu_kalam,
+    ritu,
+    samvatsara,
+    sunrise,
+    sunset,
+    tithi,
+    vaara,
+    yamaganda_kalam,
+    yoga,
+)
 
 app = FastAPI(
     title="Drik Panchanga API",
@@ -70,10 +98,6 @@ VAARA_LORDS = {
 init_swisseph()
 
 # Pydantic models
-from typing import Union
-import pytz
-from zoneinfo import ZoneInfo
-
 class DateInput(BaseModel):
     year: int = Field(..., description="Year (can be negative for BCE)")
     month: int = Field(..., ge=1, le=12, description="Month (1-12)")
@@ -93,7 +117,8 @@ class PanchangaRequest(BaseModel):
     date: Union[DateInput, str]  # Accept either DateInput object or ISO string
     location: LocationInput
 
-    @validator('date', pre=True)
+    @field_validator('date', mode='before')
+    @classmethod
     def validate_date(cls, v):
         """Allow both DateInput objects and ISO date strings"""
         if isinstance(v, str):
@@ -163,6 +188,7 @@ class PanchangaResponse(BaseModel):
     ahargana: int
     saka_year: int
     kali_year: int
+    birth_chart: Optional[str] = None  # Base64 encoded chart image
 
 class CityInfo(BaseModel):
     name: str
@@ -212,7 +238,6 @@ def get_timezone_offset(timezone_str: str, date_time: datetime) -> float:
     """Get the UTC offset for a timezone at a specific date/time"""
     try:
         # Try using zoneinfo (Python 3.9+)
-        from zoneinfo import ZoneInfo
         tz = ZoneInfo(timezone_str)
         offset = date_time.replace(tzinfo=tz).utcoffset()
         if offset:
@@ -222,7 +247,6 @@ def get_timezone_offset(timezone_str: str, date_time: datetime) -> float:
 
     try:
         # Fallback to pytz
-        import pytz
         tz = pytz.timezone(timezone_str)
         localized = tz.localize(date_time)
         offset = localized.utcoffset()
@@ -249,13 +273,11 @@ def parse_date_input(date_input: Union[DateInput, str], timezone_info: Union[str
         # Convert UTC time to local timezone
         if isinstance(timezone_info, str):
             try:
-                from zoneinfo import ZoneInfo
                 tz = ZoneInfo(timezone_info)
                 local_dt = dt.astimezone(tz)
                 tz_offset = local_dt.utcoffset().total_seconds() / 3600
             except:
                 try:
-                    import pytz
                     tz = pytz.timezone(timezone_info)
                     local_dt = dt.astimezone(tz)
                     tz_offset = local_dt.utcoffset().total_seconds() / 3600
@@ -267,7 +289,6 @@ def parse_date_input(date_input: Union[DateInput, str], timezone_info: Union[str
             # Numeric timezone offset
             tz_offset = float(timezone_info)
             # Convert UTC to local time
-            from datetime import timedelta
             local_dt = dt + timedelta(hours=tz_offset)
 
         date_obj = Date(local_dt.year, local_dt.month, local_dt.day)
@@ -343,6 +364,33 @@ def calculate_panchanga(request: PanchangaRequest):
         kday = int(ahargana(jd_midnight))
         kyear, sakayr = elapsed_year(jd_midnight, mas[0])
 
+        # Generate birth chart
+        chart_base64 = None
+        try:
+            positions_raw = planetary_positions(jd_at_time, place_obj)
+            ascendant_raw = ascendant(jd_at_time, place_obj)
+            lagna_sign = ascendant_raw[0]
+            house_planets: Dict[int, List[int]] = {i: [] for i in range(1, 13)}
+
+            for pos in positions_raw:
+                planet_idx = pos[0]
+                zodiac_idx = pos[1]
+                house = ((zodiac_idx - lagna_sign) % 12) + 1
+                house_planets[house].append(planet_idx)
+
+            # Generate chart as base64
+            chart = NorthIndianChart()
+            chart_base64 = chart.generate_chart_base64(
+                lagna=lagna_sign,
+                planet_positions=house_planets,
+                title=f"Birth Chart"
+            )
+        except Exception as chart_error:
+            print(f"Warning: Failed to generate birth chart: {chart_error}")
+            import traceback
+            traceback.print_exc()
+            # Continue without chart - it's optional
+
         # Format response
         response = PanchangaResponse(
             tithi=TithiResponse(
@@ -407,7 +455,8 @@ def calculate_panchanga(request: PanchangaRequest):
             ayanamsha=ayanamsha,
             ahargana=kday,
             saka_year=sakayr,
-            kali_year=kyear
+            kali_year=kyear,
+            birth_chart=f"data:image/png;base64,{chart_base64}" if chart_base64 else None
         )
 
         return response

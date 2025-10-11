@@ -27,7 +27,7 @@ echo -e "${GREEN}✓ Prerequisites checked${NC}"
 
 # Backend Setup
 echo -e "\n${YELLOW}Setting up Backend...${NC}"
-cd backend || exit
+cd ../backend || exit
 
 # Create virtual environment if it doesn't exist
 if [ ! -d "venv" ]; then

@@ -1,5 +1,15 @@
+# Web Framework & API
 fastapi==0.115.0
 uvicorn[standard]==0.31.0
+
+# Data Validation
 pydantic==2.9.2
+
+# Astronomical Calculations
 pyswisseph==2.10.3.2
+
+# Timezone Handling (optional - using zoneinfo as primary)
 pytz==2024.2
+
+# Image Processing (for chart generation)
+Pillow==10.4.0

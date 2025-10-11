@@ -1,11 +1,16 @@
 import fs from 'fs';
 import path from 'path';
 
-const LOG_DIR = '/apps/panchanga/logs';
+// Use project root for logs directory
+const LOG_DIR = process.env.LOG_DIR || path.join(process.cwd(), 'logs');
 
 // Ensure log directory exists
-if (!fs.existsSync(LOG_DIR)) {
-  fs.mkdirSync(LOG_DIR, { recursive: true, mode: 0o755 });
+try {
+  if (!fs.existsSync(LOG_DIR)) {
+    fs.mkdirSync(LOG_DIR, { recursive: true, mode: 0o755 });
+  }
+} catch (error) {
+  console.error('Failed to create log directory:', error);
 }
 
 // Get current date in YYYY-MM-DD format

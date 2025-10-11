@@ -16,6 +16,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Vedic Panchanga - Hindu Calendar & Astrology",
   description: "Calculate daily panchanga, tithi, nakshatra, muhurta timings and planetary positions based on Vedic astrology",
+  icons: {
+    icon: '/favicon.svg',
+  },
 };
 
 export default function RootLayout({

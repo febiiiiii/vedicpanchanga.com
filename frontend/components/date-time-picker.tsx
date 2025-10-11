@@ -60,6 +60,7 @@ export function DateTimePicker({ date, time, onDateChange, onTimeChange }: DateT
                   "w-full justify-start text-left font-normal",
                   !date && "text-muted-foreground"
                 )}
+                suppressHydrationWarning
               >
                 <CalendarIcon className="mr-2 h-4 w-4" />
                 {date ? format(date, "PPP") : <span>Pick a date</span>}
@@ -70,7 +71,6 @@ export function DateTimePicker({ date, time, onDateChange, onTimeChange }: DateT
                 mode="single"
                 selected={date}
                 onSelect={handleDateSelect}
-                initialFocus
               />
             </PopoverContent>
           </Popover>

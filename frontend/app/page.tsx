@@ -6,6 +6,7 @@ import { PanchangaCard } from '@/components/panchanga-card';
 import { CityDropdown } from '@/components/city-dropdown';
 import { DateTimePicker } from '@/components/date-time-picker';
 import { PlanetaryPositions } from '@/components/planetary-positions';
+import { NorthIndianChart } from '@/components/north-indian-chart';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -14,7 +15,7 @@ import { toast } from 'sonner';
 import useAppStore from '@/lib/store';
 import { PlanetPosition, Location } from '@/lib/types';
 import { format } from 'date-fns';
-import { Sparkles, Sun, Calendar, Star, RefreshCw } from 'lucide-react';
+import { Sparkles, Sun, Calendar, Star, RefreshCw, Diamond } from 'lucide-react';
 
 export default function Home() {
   const {
@@ -29,6 +30,7 @@ export default function Home() {
 
   const [selectedTime, setSelectedTime] = useState(format(new Date(), 'HH:mm'));
   const [planetaryPositions, setPlanetaryPositions] = useState<PlanetPosition[]>([]);
+  const [birthChart, setBirthChart] = useState<string | undefined>();
   const [loading, setLoading] = useState(false);
   const [locationLoading, setLocationLoading] = useState(false);
 
@@ -59,7 +61,15 @@ export default function Home() {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to calculate panchanga');
+        // Try to extract error details from response
+        let errorMessage = 'Failed to calculate panchanga';
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.error || errorData.detail || errorMessage;
+        } catch {
+          // If JSON parsing fails, use the generic message
+        }
+        throw new Error(errorMessage);
       }
 
       const responseData = await response.json();
@@ -90,6 +100,11 @@ export default function Home() {
       // Extract planetary positions from the response
       if (responseData.planets) {
         setPlanetaryPositions(responseData.planets || []);
+      }
+
+      // Extract birth chart image from the response
+      if (responseData.birth_chart) {
+        setBirthChart(responseData.birth_chart);
       }
 
       toast.success('Panchanga calculated successfully');
@@ -178,32 +193,32 @@ export default function Home() {
 
       {/* Header */}
       <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 shadow-sm">
-        <div className="container mx-auto px-4 py-4 md:py-6">
+        <div className="container mx-auto px-3 sm:px-4 py-3 sm:py-4 md:py-5">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-gradient-to-br from-primary/20 to-primary/10 rounded-xl animate-float">
-                <Sparkles className="h-6 w-6 md:h-7 md:w-7 text-primary" />
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className="p-1.5 sm:p-2 bg-gradient-to-br from-primary/20 to-primary/10 rounded-lg sm:rounded-xl">
+                <Sparkles className="h-5 w-5 sm:h-6 sm:w-6 md:h-7 md:w-7 text-primary" />
               </div>
               <div>
-                <h1 className="text-xl md:text-2xl font-bold bg-gradient-to-r from-primary via-primary to-primary/60 bg-clip-text text-transparent">
+                <h1 className="text-lg sm:text-xl md:text-2xl font-bold bg-gradient-to-r from-primary via-primary to-primary/60 bg-clip-text text-transparent">
                   Vedic Panchanga
                 </h1>
-                <p className="text-xs md:text-sm text-muted-foreground">
+                <p className="text-[10px] sm:text-xs md:text-sm text-muted-foreground">
                   Traditional Hindu Calendar & Astrology
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1 sm:gap-2">
               <ThemeToggle />
               <Button
                 variant="outline"
                 size="icon"
                 onClick={handleRefresh}
                 disabled={loading}
-                className="rounded-full"
+                className="rounded-full h-8 w-8 sm:h-10 sm:w-10"
                 title="Refresh calculations"
               >
-                <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+                <RefreshCw className={`h-3.5 w-3.5 sm:h-4 sm:w-4 ${loading ? 'animate-spin' : ''}`} />
               </Button>
             </div>
           </div>
@@ -211,23 +226,23 @@ export default function Home() {
       </header>
 
       {/* Main Content */}
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 md:py-8">
         {locationLoading ? (
           <div className="flex items-center justify-center min-h-[60vh]">
-            <div className="text-center space-y-4">
-              <RefreshCw className="h-12 w-12 mx-auto animate-spin text-primary" />
+            <div className="text-center space-y-3 sm:space-y-4">
+              <RefreshCw className="h-10 w-10 sm:h-12 sm:w-12 mx-auto animate-spin text-primary" />
               <div>
-                <h3 className="text-lg font-semibold">Getting your location...</h3>
-                <p className="text-sm text-muted-foreground">
+                <h3 className="text-base sm:text-lg font-semibold">Getting your location...</h3>
+                <p className="text-xs sm:text-sm text-muted-foreground mt-1">
                   Please allow location access for accurate panchanga calculations
                 </p>
               </div>
             </div>
           </div>
         ) : (
-          <div className="grid lg:grid-cols-3 gap-6">
+          <div className="grid lg:grid-cols-3 gap-4 sm:gap-6">
             {/* Left Sidebar - Controls */}
-            <div className="lg:col-span-1 space-y-6">
+            <div className="lg:col-span-1 space-y-4 sm:space-y-6">
               <DateTimePicker
                 date={selectedDate}
                 time={selectedTime}
@@ -248,18 +263,19 @@ export default function Home() {
               <Button
                 onClick={calculateAndSetPanchanga}
                 disabled={loading}
-                className="w-full"
+                className="w-full text-sm sm:text-base"
                 size="lg"
               >
                 {loading ? (
                   <>
-                    <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
-                    Calculating...
+                    <RefreshCw className="mr-1.5 sm:mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4 animate-spin" />
+                    <span>Calculating...</span>
                   </>
                 ) : (
                   <>
-                    <Calendar className="mr-2 h-4 w-4" />
-                    Calculate Panchanga
+                    <Calendar className="mr-1.5 sm:mr-2 h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                    <span className="hidden sm:inline">Calculate Panchanga</span>
+                    <span className="sm:hidden">Calculate</span>
                   </>
                 )}
               </Button>
@@ -267,19 +283,25 @@ export default function Home() {
 
           {/* Right Content - Results */}
           <div className="lg:col-span-2">
-            <Tabs defaultValue="panchanga" className="space-y-6">
-              <TabsList className="grid w-full grid-cols-3">
-                <TabsTrigger value="panchanga" className="flex items-center gap-2">
-                  <Calendar className="h-4 w-4" />
-                  Panchanga
+            <Tabs defaultValue="panchanga" className="space-y-4 sm:space-y-6">
+              <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 gap-1">
+                <TabsTrigger value="panchanga" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+                  <Calendar className="h-3 w-3 sm:h-4 sm:w-4" />
+                  <span className="hidden sm:inline">Panchanga</span>
+                  <span className="sm:hidden">Panch</span>
                 </TabsTrigger>
-                <TabsTrigger value="planets" className="flex items-center gap-2">
-                  <Star className="h-4 w-4" />
-                  Planets
+                <TabsTrigger value="planets" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+                  <Star className="h-3 w-3 sm:h-4 sm:w-4" />
+                  <span>Planets</span>
                 </TabsTrigger>
-                <TabsTrigger value="muhurta" className="flex items-center gap-2">
-                  <Sun className="h-4 w-4" />
-                  Muhurta
+                <TabsTrigger value="chart" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+                  <Diamond className="h-3 w-3 sm:h-4 sm:w-4" />
+                  <span>Chart</span>
+                </TabsTrigger>
+                <TabsTrigger value="muhurta" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+                  <Sun className="h-3 w-3 sm:h-4 sm:w-4" />
+                  <span className="hidden sm:inline">Muhurta</span>
+                  <span className="sm:hidden">Time</span>
                 </TabsTrigger>
               </TabsList>
 
@@ -307,6 +329,21 @@ export default function Home() {
                       <div className="text-center text-muted-foreground">
                         <Star className="h-12 w-12 mx-auto mb-4 opacity-50" />
                         <p>Calculate panchanga to view planetary positions</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+              </TabsContent>
+
+              <TabsContent value="chart">
+                {birthChart ? (
+                  <NorthIndianChart chartImage={birthChart} />
+                ) : (
+                  <Card>
+                    <CardContent className="flex items-center justify-center h-96">
+                      <div className="text-center text-muted-foreground">
+                        <Diamond className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                        <p>Calculate panchanga to view birth chart</p>
                       </div>
                     </CardContent>
                   </Card>
@@ -394,13 +431,13 @@ export default function Home() {
       </div>
 
       {/* Footer */}
-      <footer className="mt-16 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container mx-auto px-4 py-6">
-          <div className="text-center text-sm text-muted-foreground">
+      <footer className="mt-8 sm:mt-12 md:mt-16 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6">
+          <div className="text-center text-xs sm:text-sm text-muted-foreground">
             <p>
               Vedic Panchanga - Traditional Hindu Calendar System
             </p>
-            <p className="mt-1">
+            <p className="mt-0.5 sm:mt-1">
               Calculations are approximate and for general guidance only
             </p>
           </div>

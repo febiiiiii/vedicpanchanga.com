@@ -299,6 +299,9 @@ export async function POST(request: NextRequest) {
       planets: planets?.positions || null,
       ascendant: planets?.ascendant || null,
 
+      // Birth chart (if available)
+      birth_chart: panchanga.birth_chart || null,
+
       // Dasha (if available)
       dasha: dasha?.current_mahadasha || null,
 
