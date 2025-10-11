@@ -76,6 +76,65 @@ Key endpoints:
 - `frontend/components/panchanga-card.tsx`: Data display logic
 - `backend/cities.json`: City database - searchable location data
 
+## Project Structure
+
+```
+vedicpanchanga.com/
+├── backend/                      # Python FastAPI backend (port 8121)
+│   ├── api.py                   # FastAPI application and endpoints
+│   ├── panchanga.py             # Core Panchanga calculation engine
+│   ├── vedic.py                 # Vedic astrology utility functions
+│   ├── vimsottari.py            # Vimsottari Dasha calculations
+│   ├── chart_generator.py       # Birth chart generation utilities
+│   ├── cities.json              # 100,000+ cities database with coordinates
+│   ├── requirements.txt         # Python dependencies
+│   └── README.md                # Backend documentation
+│
+├── frontend/                     # Next.js 15 frontend (port 3121)
+│   ├── app/                     # Next.js App Router
+│   │   ├── page.tsx            # Main dashboard page
+│   │   ├── layout.tsx          # Root layout with providers
+│   │   └── api/v1/             # API proxy routes with rate limiting
+│   │       ├── panchanga/      # Panchanga calculation endpoint
+│   │       └── cities/         # City search endpoint
+│   ├── components/              # React components
+│   │   ├── panchanga-card.tsx  # Main Panchanga display component
+│   │   ├── city-dropdown.tsx   # Location search component
+│   │   ├── date-time-picker.tsx # Date/time selection UI
+│   │   ├── theme-toggle.tsx    # Dark/Light mode switcher
+│   │   └── ui/                 # Shadcn/ui primitive components
+│   ├── lib/                     # Utilities and core logic
+│   │   ├── api-client.ts       # Backend API communication
+│   │   ├── store.ts            # Zustand state management
+│   │   ├── types.ts            # TypeScript type definitions
+│   │   ├── rate-limiter.ts     # Rate limiting logic
+│   │   └── utils.ts            # Common utilities
+│   ├── hooks/                   # Custom React hooks
+│   ├── public/                  # Static assets
+│   ├── package.json             # Frontend dependencies
+│   └── README.md                # Frontend documentation
+│
+├── tests/                        # Testing and verification
+│   ├── test_api.py              # Backend API tests
+│   ├── test_timezones.py        # Timezone calculation tests
+│   ├── verify_timezones.py      # Timezone accuracy verification
+│   ├── stress_test_panchanga.py # Load testing for calculations
+│   ├── stress_test_rate_limited.py # Rate limit testing
+│   ├── verify_apis.sh           # API endpoint verification
+│   ├── test_all_timezones.sh    # Comprehensive timezone testing
+│   └── test_production_api.sh   # Production deployment testing
+│
+├── infra/                        # Infrastructure and deployment
+│   ├── README-DEPLOYMENT.md     # Deployment documentation
+│   └── [deployment scripts]
+│
+├── API.md                        # Complete API documentation
+├── CLAUDE.md                     # This file - AI assistant instructions
+├── README.md                     # Main project documentation (English)
+├── README.hi.md                  # Hindi documentation
+├── README.ta.md                  # Tamil documentation
+```
+
 ## API Communication Flow
 
 1. Frontend UI (`app/page.tsx`) →

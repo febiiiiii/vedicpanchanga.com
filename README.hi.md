@@ -8,8 +8,8 @@
 
 ```bash
 # रिपॉजिटरी क्लोन करें
-git clone https://github.com/bidyashish/drik-panchanga
-cd drik-panchanga
+git clone https://github.com/bidyashish/vedicpanchanga.com
+cd vedicpanchanga.com
 
 # एक-कमांड सेटअप और रन
 ./setup.sh
@@ -42,6 +42,54 @@ npm run dev
 
 **बैकएंड**: Python • FastAPI • PySwisseph
 **फ्रंटएंड**: Next.js 15 • React 19 • TypeScript • Tailwind CSS v4 • Shadcn/ui
+
+## परियोजना संरचना
+
+```
+vedicpanchanga.com/
+├── backend/                      # Python FastAPI बैकएंड (पोर्ट 8121)
+│   ├── api.py                   # FastAPI एप्लिकेशन और एंडपॉइंट
+│   ├── panchanga.py             # मुख्य पंचांग गणना इंजन
+│   ├── vedic.py                 # वैदिक ज्योतिष उपयोगिता फ़ंक्शन
+│   ├── vimsottari.py            # विम्शोत्तरी दशा गणना
+│   ├── chart_generator.py       # जन्म कुंडली जनरेशन
+│   ├── cities.json              # 100,000+ शहरों का डेटाबेस
+│   ├── requirements.txt         # Python निर्भरताएं
+│   └── README.md                # बैकएंड दस्तावेज़
+│
+├── frontend/                     # Next.js 15 फ्रंटएंड (पोर्ट 3121)
+│   ├── app/                     # Next.js App Router
+│   │   ├── page.tsx            # मुख्य डैशबोर्ड पृष्ठ
+│   │   ├── layout.tsx          # रूट लेआउट
+│   │   └── api/v1/             # रेट लिमिटिंग के साथ API प्रॉक्सी
+│   ├── components/              # React कंपोनेंट
+│   │   ├── panchanga-card.tsx  # मुख्य पंचांग प्रदर्शन
+│   │   ├── city-dropdown.tsx   # स्थान खोज
+│   │   ├── date-time-picker.tsx # तिथि/समय चयन
+│   │   └── ui/                 # Shadcn/ui कंपोनेंट
+│   ├── lib/                     # उपयोगिताएं और मुख्य तर्क
+│   │   ├── api-client.ts       # बैकएंड API क्लाइंट
+│   │   ├── store.ts            # Zustand स्टेट मैनेजमेंट
+│   │   ├── types.ts            # TypeScript प्रकार
+│   │   └── rate-limiter.ts     # रेट लिमिटिंग तर्क
+│   └── hooks/                   # कस्टम React हुक
+│
+├── tests/                        # परीक्षण सूट
+│   ├── test_api.py              # API परीक्षण
+│   ├── test_timezones.py        # टाइमज़ोन परीक्षण
+│   ├── stress_test_*.py         # लोड परीक्षण
+│   └── *.sh                     # शेल परीक्षण स्क्रिप्ट
+│
+├── infra/                        # तैनाती
+│   └── README-DEPLOYMENT.md     # तैनाती गाइड
+│
+├── API.md                        # API दस्तावेज़
+├── CLAUDE.md                     # AI सहायक निर्देश
+├── README.md                     # मुख्य दस्तावेज़ (अंग्रेज़ी)
+├── README.hi.md                  # हिंदी दस्तावेज़
+├── README.ta.md                  # तमिल दस्तावेज़
+└── setup.sh                      # एक-कमांड सेटअप
+```
 
 ## API दस्तावेज़
 

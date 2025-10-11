@@ -9,8 +9,8 @@ Drik Panchang calculator with modern web interface. Calculate traditional Pancha
 
 ```bash
 # Clone repository
-git clone https://github.com/bidyashish/drik-panchanga
-cd drik-panchanga
+git clone https://github.com/bidyashish/vedicpanchanga.com
+cd vedicpanchanga.com
 
 # One-command setup and run
 ./setup.sh
@@ -47,7 +47,7 @@ Open http://localhost:3121
 ## Project Structure
 
 ```
-drik-panchanga/
+vedicpanchanga.com/
 ├── backend/          # Python FastAPI server (port 8121)
 ├── frontend/         # Next.js 15 application (port 3121)
 ├── infra/           # Deployment scripts and infrastructure
@@ -92,11 +92,9 @@ Full docs: See [API.md](./API.md) • Backend docs: `http://localhost:8121/docs`
 
 We welcome contributions! Here's how you can help:
 
-### 🐛 Found a Bug?
-[Open an issue](https://github.com/bidyashish/drik-panchanga/issues/new) with details about the problem and steps to reproduce.
+### 🐛 Found a Bug?/### 💡 Have a Feature Request?
+[Open an issue](https://github.com/bidyashish/vedicpanchanga.com/issues/new) with details about the problem and steps to reproduce.
 
-### 💡 Have a Feature Request?
-[Create an issue](https://github.com/bidyashish/drik-panchanga/issues/new) describing the feature and why it would be useful.
 
 ### ⭐ Support the Project
 - **Star this repository** to help others find it
@@ -105,13 +103,13 @@ We welcome contributions! Here's how you can help:
 
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=bidyashish/drik-panchanga&type=Date)](https://star-history.com/#bidyashish/drik-panchanga&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=bidyashish/vedicpanchanga.com&type=Date)](https://star-history.com/#bidyashish/vedicpanchanga.com&Date)
 
 ## Contributors
 
 Thanks to all the contributors who have helped make this project better!
 
-[![Contributors](https://contrib.rocks/image?repo=bidyashish/drik-panchanga)](https://github.com/bidyashish/drik-panchanga/graphs/contributors)
+[![Contributors](https://contrib.rocks/image?repo=bidyashish/vedicpanchanga.com)](https://github.com/bidyashish/vedicpanchanga.com/graphs/contributors)
 
 ## Trending
 
