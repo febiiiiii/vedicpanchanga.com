@@ -1,0 +1,44 @@
+# ads.txt for Vedic Panchanga (vedicpanchanga.com)
+# IAB-compliant ads.txt file for programmatic advertising
+# Format: <domain>, <publisher_id>, <relationship>, <certification_authority_id>
+# Updated: 2025-10-13
+
+# ===== GOOGLE ADSENSE & AD MANAGER =====
+# Primary monetization through Google AdSense
+google.com, pub-5806576477282997, DIRECT, f08c47fec0942fa0
+
+# Google Ad Manager (DoubleClick for Publishers)
+# Uncomment when you upgrade to Ad Manager
+# google.com, pub-5806576477282997, RESELLER, f08c47fec0942fa0
+
+# ===== MAJOR AD EXCHANGES (Optional - Add when approved) =====
+# These work with Google AdSense through authorized partnerships
+
+# OpenX
+# openx.com, YOUR_OPENX_ID, RESELLER, 6a698e2ec38604c6
+
+# Rubicon Project (Magnite)
+# rubiconproject.com, YOUR_RUBICON_ID, RESELLER, 0bfd66d529a55807
+
+# PubMatic
+# pubmatic.com, YOUR_PUBMATIC_ID, RESELLER, 5d62403b186f2ace
+
+# Index Exchange
+# indexexchange.com, YOUR_INDEX_ID, RESELLER, 50b1c356f2c5c8fc
+
+# AppNexus (Xandr)
+# appnexus.com, YOUR_APPNEXUS_ID, RESELLER, f5ab79cb980f11d1
+
+# Criteo
+# criteo.com, YOUR_CRITEO_ID, RESELLER, 9fac4a4a87c2a44f
+
+# Media.net
+# media.net, YOUR_MEDIANET_ID, RESELLER
+
+# ===== NOTES =====
+# 1. Only add entries for ad networks you have active accounts with
+# 2. DIRECT = you have a direct relationship with the ad network
+# 3. RESELLER = the ad network can resell your inventory through partners
+# 4. Always use the certification_authority_id provided by each network
+# 5. Remove comments when adding actual entries above
+# 6. Validate your ads.txt at: https://adstxt.guru/ or https://adstxt-validator.com/
