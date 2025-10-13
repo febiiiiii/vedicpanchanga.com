@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { toast } from 'sonner';
 import useAppStore from '@/lib/store';
@@ -21,7 +20,6 @@ export function useGeolocation() {
         const { latitude, longitude } = position.coords;
 
         try {
-          // Get city name and timezone in parallel
           const [geoResponse, timezoneResponse] = await Promise.all([
             fetch(
               `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=10&addressdetails=1`,
@@ -57,14 +55,12 @@ export function useGeolocation() {
           setCurrentLocation(newLocation);
           setLoading(false);
           toast.success(`Location set to ${city}`);
-        } catch (error) {
-          console.error('Error getting location details:', error);
+        } catch {
           setLoading(false);
           toast.error('Unable to get location details');
         }
       },
-      (error) => {
-        console.error('Error getting location:', error);
+      () => {
         setLoading(false);
         toast.error('Unable to get your location. Please select manually.');
       }

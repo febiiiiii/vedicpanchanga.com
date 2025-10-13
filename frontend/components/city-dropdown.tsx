@@ -36,7 +36,6 @@ export function CityDropdown({ onLocationChange, className }: CityDropdownProps)
   const [popularCities] = useState<City[]>(getPopularCities());
   const [isSearching, setIsSearching] = useState(false);
 
-  // Get timezone from coordinates
   const getTimezoneFromCoords = async (lat: number, lon: number): Promise<string> => {
     try {
       const response = await fetch(
@@ -46,8 +45,8 @@ export function CityDropdown({ onLocationChange, className }: CityDropdownProps)
         const data = await response.json();
         return data.timeZone || Intl.DateTimeFormat().resolvedOptions().timeZone;
       }
-    } catch (error) {
-      console.error('Error getting timezone:', error);
+    } catch {
+      // Silent catch - return browser timezone
     }
     return Intl.DateTimeFormat().resolvedOptions().timeZone;
   };
@@ -61,13 +60,9 @@ export function CityDropdown({ onLocationChange, className }: CityDropdownProps)
         return;
       }
 
-      // First, search in local cities (instant results)
       const localResults = searchCities(query);
-
-      // Set local results immediately
       setSearchResults(localResults);
 
-      // Then fetch from Nominatim API for additional results
       setIsSearching(true);
       try {
         const response = await fetch(
@@ -77,11 +72,10 @@ export function CityDropdown({ onLocationChange, className }: CityDropdownProps)
 
         if (!response.ok) {
           setIsSearching(false);
-          return; // Keep local results
+          return;
         }
 
         const results = await response.json();
-        // Don't fetch timezone for all results - only when selected
         const apiCities: City[] = results
           .filter((r: { lat: string; lon: string }) => r.lat && r.lon)
           .slice(0, 5)
@@ -101,11 +95,10 @@ export function CityDropdown({ onLocationChange, className }: CityDropdownProps)
               country: r.address?.country || '',
               latitude: lat,
               longitude: lon,
-              timezone: Intl.DateTimeFormat().resolvedOptions().timeZone, // Use browser timezone as placeholder
+              timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
             };
           });
 
-        // Combine local and API results, removing duplicates
         const combinedResults = [...localResults];
         apiCities.forEach(apiCity => {
           if (!combinedResults.some(local =>
@@ -118,10 +111,8 @@ export function CityDropdown({ onLocationChange, className }: CityDropdownProps)
 
         setSearchResults(combinedResults);
         setIsSearching(false);
-      } catch (error) {
-        console.error('Error searching cities:', error);
+      } catch {
         setIsSearching(false);
-        // Keep local results on error
       }
     }, 500);
 
@@ -133,7 +124,6 @@ export function CityDropdown({ onLocationChange, className }: CityDropdownProps)
   }, [searchValue]);
 
   const handleSelectCity = useCallback(async (city: City) => {
-    // Get accurate timezone when city is selected
     const timezone = await getTimezoneFromCoords(city.latitude, city.longitude);
 
     const location: Location = {
@@ -150,7 +140,6 @@ export function CityDropdown({ onLocationChange, className }: CityDropdownProps)
     setSearchValue('');
   }, [setCurrentLocation, onLocationChange]);
 
-  // Group cities by country (only for search results)
   const citiesByCountry = React.useMemo(() => {
     const grouped: Record<string, City[]> = {};
     searchResults.forEach(city => {
@@ -164,7 +153,6 @@ export function CityDropdown({ onLocationChange, className }: CityDropdownProps)
     return grouped;
   }, [searchResults]);
 
-  // Format location display
   const locationDisplay = currentLocation
     ? `${currentLocation.city}${currentLocation.country ? ', ' + currentLocation.country : ''}`
     : 'Select location...';

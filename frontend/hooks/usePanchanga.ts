@@ -6,7 +6,6 @@ import { PlanetPosition } from '@/lib/types';
 export function usePanchanga() {
   const { currentLocation, selectedDate, setPanchangaData } = useAppStore();
 
-  // Initialize time immediately
   const now = new Date();
   const initialTime = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
 
@@ -23,12 +22,10 @@ export function usePanchanga() {
 
     setLoading(true);
     try {
-      // Combine date and time
       const dateTime = new Date(selectedDate);
       const [hours, minutes] = selectedTime.split(':');
       dateTime.setHours(parseInt(hours), parseInt(minutes));
 
-      // Call API to calculate panchanga
       const response = await fetch('/api/v1/panchanga', {
         method: 'POST',
         headers: {
@@ -41,20 +38,18 @@ export function usePanchanga() {
       });
 
       if (!response.ok) {
-        // Try to extract error details from response
         let errorMessage = 'Failed to calculate panchanga';
         try {
           const errorData = await response.json();
           errorMessage = errorData.error || errorData.detail || errorMessage;
         } catch {
-          // If JSON parsing fails, use the generic message
+          // Silent catch for JSON parsing errors
         }
         throw new Error(errorMessage);
       }
 
       const responseData = await response.json();
 
-      // Restructure the data to match the expected format
       const panchanga = {
         date: new Date(responseData.date),
         location: responseData.location,
@@ -78,26 +73,22 @@ export function usePanchanga() {
 
       setPanchangaData(panchanga);
 
-      // Extract planetary positions from the response
       if (responseData.planets) {
         setPlanetaryPositions(responseData.planets || []);
       }
 
-      // Extract birth chart image from the response
       if (responseData.birth_chart) {
         setBirthChart(responseData.birth_chart);
       }
 
       toast.success('Panchanga calculated successfully');
     } catch (error) {
-      console.error('Error calculating panchanga:', error);
-      toast.error('Failed to calculate panchanga');
+      toast.error(error instanceof Error ? error.message : 'Failed to calculate panchanga');
     } finally {
       setLoading(false);
     }
   };
 
-  // Auto-calculate on mount
   useEffect(() => {
     if (currentLocation && selectedTime) {
       calculatePanchanga();

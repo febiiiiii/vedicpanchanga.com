@@ -4,7 +4,6 @@ import { logError, logRequest } from '@/lib/logger';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8121';
 
-// CORS headers for external API access
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
@@ -12,13 +11,11 @@ const corsHeaders = {
   'Access-Control-Max-Age': '86400',
 };
 
-// Helper to format time in 12-hour format
 const formatTime = (time: { hours?: number; minutes?: number } | undefined | null): string => {
   if (!time) return 'N/A';
   let hours = time.hours || 0;
   const minutes = time.minutes || 0;
 
-  // Handle times after midnight (hours >= 24)
   let nextDay = false;
   if (hours >= 24) {
     hours = hours - 24;
@@ -32,71 +29,6 @@ const formatTime = (time: { hours?: number; minutes?: number } | undefined | nul
   return nextDay ? `${timeStr} (+1)` : timeStr;
 };
 
-// Helper to convert timezone to offset for a specific date
-const getTimezoneOffset = (timezone: string = 'Asia/Kolkata', date: Date = new Date()): number => {
-  try {
-    // Use Intl.DateTimeFormat to get the offset for the specific date
-    // This method properly handles DST transitions
-    const formatter = new Intl.DateTimeFormat('en-US', {
-      timeZone: timezone,
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-      timeZoneName: 'longOffset',
-      hour12: false
-    });
-
-    const parts = formatter.formatToParts(date);
-    const timeZoneName = parts.find(p => p.type === 'timeZoneName')?.value;
-
-    if (timeZoneName) {
-      // Parse formats like "GMT+5:30", "GMT-8", "GMT+04:00", etc.
-      const match = timeZoneName.match(/GMT([+-])(\d{1,2}):?(\d{2})?/);
-      if (match) {
-        const sign = match[1] === '+' ? 1 : -1;
-        const hours = parseInt(match[2]);
-        const minutes = match[3] ? parseInt(match[3]) : 0;
-        return sign * (hours + minutes / 60);
-      }
-    }
-
-    // Fallback: Calculate offset by comparing UTC and local times
-    const utcString = date.toISOString();
-    const localString = date.toLocaleString('en-US', {
-      timeZone: timezone,
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-      hour12: false
-    });
-
-    // Parse the local string
-    const [datePart, timePart] = localString.split(', ');
-    const [month, day, year] = datePart.split('/').map(Number);
-    const [hour, minute, second] = timePart.split(':').map(Number);
-
-    // Create a date in the local timezone (treating it as UTC for calculation)
-    const localDate = new Date(Date.UTC(year, month - 1, day, hour, minute, second));
-
-    // Calculate offset in hours
-    const offsetMs = localDate.getTime() - date.getTime();
-    const offsetHours = offsetMs / (1000 * 60 * 60);
-
-    // Round to nearest 15 minutes (0.25 hours) to handle fractional timezones
-    return Math.round(offsetHours * 4) / 4;
-
-  } catch (error) {
-    console.warn(`Could not determine offset for timezone ${timezone}, using IST default`, error);
-    // Default to IST offset if all methods fail
-    return 5.5;
-  }
-};
 
 export async function OPTIONS() {
   return NextResponse.json({}, { headers: corsHeaders });
@@ -107,7 +39,6 @@ export async function POST(request: NextRequest) {
   let status = 200;
 
   try {
-    // Check rate limit
     const rateLimitResult = await checkRateLimit(request);
 
     if (!rateLimitResult.success) {
@@ -125,7 +56,6 @@ export async function POST(request: NextRequest) {
         }
       );
 
-      // Log rate-limited request
       logRequestData(request, status, startTime);
       return response;
     }
@@ -142,8 +72,6 @@ export async function POST(request: NextRequest) {
 
     const parsedDate = new Date(date);
 
-    // Convert to the user's timezone for extraction
-    // parsedDate is in UTC, we need to get components in the user's local timezone
     const userTimezone = location.timezone || 'America/Vancouver';
     const userTimeString = parsedDate.toLocaleString('en-US', {
       timeZone: userTimezone,
@@ -156,12 +84,10 @@ export async function POST(request: NextRequest) {
       hour12: false
     });
 
-    // Parse the localized string: "MM/DD/YYYY, HH:MM:SS"
     const [datePart, timePart] = userTimeString.split(', ');
     const [month, day, year] = datePart.split('/').map(Number);
     const [hour, minute, second] = timePart.split(':').map(Number);
 
-    // Prepare request for Python API
     const apiRequest = {
       date: {
         year,
@@ -174,13 +100,12 @@ export async function POST(request: NextRequest) {
       location: {
         latitude: location.latitude,
         longitude: location.longitude,
-        timezone: location.timezone,  // Send timezone name directly
+        timezone: location.timezone,
         city: location.city,
         country: location.country
       }
     };
 
-    // Fetch all data in parallel
     const [panchangaRes, planetsRes, dashaRes] = await Promise.allSettled([
       fetch(`${API_BASE_URL}/panchanga`, {
         method: 'POST',
@@ -199,7 +124,6 @@ export async function POST(request: NextRequest) {
       })
     ]);
 
-    // Process responses
     const panchanga = panchangaRes.status === 'fulfilled' && panchangaRes.value.ok
       ? await panchangaRes.value.json()
       : null;
@@ -216,16 +140,13 @@ export async function POST(request: NextRequest) {
       throw new Error('Failed to calculate panchanga');
     }
 
-    // Build streamlined response
     const response = {
-      // Basic info
       date: parsedDate.toISOString(),
       location: {
         ...location,
         timezone: location.timezone || 'Asia/Kolkata'
       },
 
-      // Sun & Moon
       sun: {
         rise: formatTime(panchanga.sunrise),
         set: formatTime(panchanga.sunset)
@@ -235,7 +156,6 @@ export async function POST(request: NextRequest) {
         set: formatTime(panchanga.moonset)
       },
 
-      // Panchanga
       panchanga: {
         tithi: {
           name: panchanga.tithi.name,
@@ -265,7 +185,6 @@ export async function POST(request: NextRequest) {
         }
       },
 
-      // Calendar info
       calendar: {
         masa: panchanga.masa,
         ritu: panchanga.ritu,
@@ -275,7 +194,6 @@ export async function POST(request: NextRequest) {
         kaliYear: panchanga.kali_year
       },
 
-      // Muhurta
       muhurta: {
         abhijit: {
           start: formatTime(panchanga.abhijit_muhurta.start),
@@ -295,33 +213,24 @@ export async function POST(request: NextRequest) {
         }
       },
 
-      // Planetary positions (if available)
       planets: planets?.positions || null,
       ascendant: planets?.ascendant || null,
-
-      // Birth chart (if available)
       birth_chart: panchanga.birth_chart || null,
-
-      // Dasha (if available)
       dasha: dasha?.current_mahadasha || null,
 
-      // API info
       api: {
         version: '1.0.0',
         timestamp: new Date().toISOString()
       }
     };
 
-    // Log successful request
     logRequestData(request, status, startTime);
 
     return NextResponse.json(response, { headers: corsHeaders });
 
   } catch (error) {
     status = 500;
-    console.error('API Error:', error);
 
-    // Log error with details
     const ip = request.headers.get('x-client-ip') ||
       request.headers.get('x-forwarded-for')?.split(',')[0] ||
       request.headers.get('x-real-ip') ||
@@ -335,7 +244,6 @@ export async function POST(request: NextRequest) {
       stack: error instanceof Error ? error.stack : undefined,
     });
 
-    // Log failed request
     logRequestData(request, status, startTime);
 
     return NextResponse.json(
@@ -370,7 +278,6 @@ export async function GET(request: NextRequest) {
   return POST(req as NextRequest);
 }
 
-// Helper function to log request data
 function logRequestData(request: NextRequest, status: number, startTime: number): void {
   const ip = request.headers.get('x-client-ip') ||
     request.headers.get('cf-connecting-ip') ||
@@ -382,9 +289,8 @@ function logRequestData(request: NextRequest, status: number, startTime: number)
     request.headers.get('cf-ipcountry') ||
     undefined;
 
-  const duration = (Date.now() - startTime) / 1000; // seconds
+  const duration = (Date.now() - startTime) / 1000;
 
-  // Cloudflare headers
   const cfRay = request.headers.get('x-cf-ray') || request.headers.get('cf-ray') || undefined;
   const cfCacheStatus = request.headers.get('x-cf-cache-status') || request.headers.get('cf-cache-status') || undefined;
   const cfDeviceType = request.headers.get('x-cf-device-type') || request.headers.get('cf-device-type') || undefined;

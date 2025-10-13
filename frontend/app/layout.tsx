@@ -53,7 +53,6 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        {/* Google AdSense */}
         <script
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5806576477282997"
@@ -93,10 +92,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(dataCatalogSchema) }}
         />
       </head>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {/* Google Analytics */}
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-RNF2N08BQ6"
           strategy="afterInteractive"
@@ -110,14 +106,12 @@ export default function RootLayout({
           `}
         </Script>
 
-        {/* Umami Analytics */}
         <Script
           src="https://cloud.umami.is/script.js"
           data-website-id="76c15b44-bdc2-4222-ac33-1ad5e9795bd1"
           strategy="afterInteractive"
         />
 
-        {/* Microsoft Clarity */}
         <Script id="microsoft-clarity" strategy="afterInteractive">
           {`
             (function(c,l,a,r,i,t,y){

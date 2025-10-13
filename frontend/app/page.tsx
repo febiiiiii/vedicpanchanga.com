@@ -12,7 +12,6 @@ import useAppStore from '@/lib/store';
 export default function Home() {
   const { setCurrentLocation } = useAppStore();
 
-  // Custom hooks
   const {
     selectedTime,
     setSelectedTime,
@@ -30,12 +29,10 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-gradient-to-b from-background via-background to-secondary/10">
       <Toaster />
-
       <Header loading={loading} onRefresh={calculatePanchanga} />
 
       <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 md:py-8">
         <div className="grid lg:grid-cols-3 gap-4 sm:gap-6">
-          {/* Left Sidebar - Settings */}
           <div className="lg:col-span-1">
             <SettingsPanel
               selectedTime={selectedTime}
@@ -48,7 +45,6 @@ export default function Home() {
             />
           </div>
 
-          {/* Right Content - Results */}
           <div className="lg:col-span-2">
             <PanchangaResults
               planetaryPositions={planetaryPositions}
