@@ -1,12 +1,25 @@
 import { Tabs } from 'expo-router';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useTheme } from 'react-native-paper';
+import analytics from '../../lib/analytics';
 
 export default function TabLayout() {
   const theme = useTheme();
 
   return (
     <Tabs
+      screenListeners={{
+        state: (e) => {
+          // Track tab changes
+          const state = e.data.state;
+          if (state) {
+            const currentRoute = state.routes[state.index];
+            const tabName = currentRoute.name === 'index' ? 'Panchanga' :
+                          currentRoute.name.charAt(0).toUpperCase() + currentRoute.name.slice(1);
+            analytics.trackTabChange(tabName);
+          }
+        }
+      }}
       screenOptions={{
         tabBarActiveTintColor: theme.colors.primary,
         tabBarInactiveTintColor: theme.colors.onSurfaceVariant,

@@ -20,6 +20,7 @@ import { DateTimePicker } from '../../components/inputs/DateTimePicker';
 import { CitySearch } from '../../components/inputs/CitySearch';
 import { Card, InfoCard } from '../../components/ui/Card';
 import { LoadingSpinner } from '../../components/ui/LoadingSpinner';
+import analytics, { trackScreen, trackEvent } from '../../lib/analytics';
 
 export default function PanchangaScreen() {
   const theme = useTheme();
@@ -39,12 +40,16 @@ export default function PanchangaScreen() {
 
   // Auto-calculate on mount if location is set
   useEffect(() => {
+    // Track screen view
+    trackScreen('Panchanga');
+
     if (currentLocation && !panchangaData) {
       calculatePanchanga();
     }
   }, []);
 
   const handleRefresh = () => {
+    trackEvent('panchanga_refresh');
     calculatePanchanga();
   };
 
@@ -311,14 +316,23 @@ export default function PanchangaScreen() {
         <DateTimePicker
           date={selectedDate}
           time={selectedTime}
-          onDateChange={(date) => setDateTime(date, selectedTime)}
-          onTimeChange={(time) => setDateTime(selectedDate, time)}
+          onDateChange={(date) => {
+            trackEvent('date_changed', { date: date.toISOString() });
+            setDateTime(date, selectedTime);
+          }}
+          onTimeChange={(time) => {
+            trackEvent('time_changed', { time });
+            setDateTime(selectedDate, time);
+          }}
         />
 
         {/* Location Search */}
         <CitySearch
           location={currentLocation}
-          onLocationChange={setLocation}
+          onLocationChange={(location) => {
+            analytics.trackLocationChange(location, 'search');
+            setLocation(location);
+          }}
         />
 
         {/* Error Message */}
@@ -384,7 +398,12 @@ export default function PanchangaScreen() {
       <FAB
         style={[styles.fab, { backgroundColor: theme.colors.primary }]}
         icon="calculator"
-        onPress={calculatePanchanga}
+        onPress={() => {
+          if (currentLocation) {
+            analytics.trackPanchangaCalculation(currentLocation, selectedDate);
+          }
+          calculatePanchanga();
+        }}
         label="Calculate"
         loading={isCalculating}
       />
