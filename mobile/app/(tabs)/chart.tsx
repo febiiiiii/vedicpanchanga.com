@@ -40,20 +40,20 @@ export default function ChartScreen() {
           </View>
         </Card>
 
-        {panchangaData.dasha && (
+        {panchangaData.dasha?.current_mahadasha && (
           <Card title="Current Vimsottari Dasha" style={styles.card}>
             <View style={styles.dashaInfo}>
               <Text variant="titleMedium">
-                {panchangaData.dasha.planet} Mahadasha
+                {panchangaData.dasha.current_mahadasha.planet} Mahadasha
               </Text>
               <Text variant="bodyMedium" style={styles.dashaDetail}>
-                Started: {new Date(panchangaData.dasha.start_date).toLocaleDateString()}
+                Started: {new Date(panchangaData.dasha.current_mahadasha.start_date).toLocaleDateString()}
               </Text>
               <Text variant="bodyMedium" style={styles.dashaDetail}>
-                Ends: {new Date(panchangaData.dasha.end_date).toLocaleDateString()}
+                Ends: {new Date(panchangaData.dasha.current_mahadasha.end_date).toLocaleDateString()}
               </Text>
               <Text variant="bodyMedium" style={styles.dashaDetail}>
-                Duration: {panchangaData.dasha.duration} years
+                Duration: {panchangaData.dasha.current_mahadasha.duration} years
               </Text>
             </View>
           </Card>
