@@ -1,5 +1,5 @@
-import React from 'react';
-import { ScrollView, StyleSheet, View, Image, Dimensions } from 'react-native';
+import React, { useState } from 'react';
+import { ScrollView, StyleSheet, View, Image, Dimensions, Platform } from 'react-native';
 import { Text, useTheme } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import useStore from '../../lib/store';
@@ -12,6 +12,7 @@ const chartSize = screenWidth - 32; // Account for padding
 export default function ChartScreen() {
   const theme = useTheme();
   const { panchangaData, isCalculating } = useStore();
+  const [imageError, setImageError] = useState(false);
 
   if (isCalculating) {
     return <LoadingSpinner fullScreen message="Loading birth chart..." />;
@@ -27,16 +28,37 @@ export default function ChartScreen() {
     );
   }
 
+  // Ensure base64 string is properly formatted
+  const imageSource = panchangaData.birth_chart.startsWith('data:image/')
+    ? panchangaData.birth_chart
+    : `data:image/png;base64,${panchangaData.birth_chart}`;
+
   return (
     <SafeAreaView style={styles.container} edges={['bottom']}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <Card title="North Indian Birth Chart" style={styles.card}>
           <View style={styles.chartContainer}>
-            <Image
-              source={{ uri: `data:image/png;base64,${panchangaData.birth_chart}` }}
-              style={[styles.chart, { width: chartSize, height: chartSize }]}
-              resizeMode="contain"
-            />
+            {!imageError ? (
+              <Image
+                source={{ uri: imageSource }}
+                style={[styles.chart, { width: chartSize, height: chartSize }]}
+                resizeMode="contain"
+                onError={(error) => {
+                  console.error('Image loading error:', error);
+                  setImageError(true);
+                }}
+                onLoad={() => setImageError(false)}
+              />
+            ) : (
+              <View style={[styles.errorContainer, { width: chartSize, height: chartSize }]}>
+                <Text variant="bodyLarge" style={styles.errorText}>
+                  Unable to display birth chart
+                </Text>
+                <Text variant="bodyMedium" style={styles.errorSubtext}>
+                  Please try calculating again
+                </Text>
+              </View>
+            )}
           </View>
         </Card>
 
@@ -85,7 +107,21 @@ const styles = StyleSheet.create({
   },
   chart: {
     backgroundColor: '#fff',
-    borderRadius: 8,
+    borderRadius: 4, // Reduced from 8
+  },
+  errorContainer: {
+    backgroundColor: '#f5f5f5',
+    borderRadius: 4, // Reduced from 8
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+  },
+  errorText: {
+    marginBottom: 8,
+  },
+  errorSubtext: {
+    opacity: 0.7,
   },
   dashaInfo: {
     gap: 8,

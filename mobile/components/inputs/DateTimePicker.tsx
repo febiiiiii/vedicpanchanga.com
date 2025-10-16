@@ -205,7 +205,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
   },
   surface: {
-    borderRadius: 12,
+    borderRadius: 6,
     padding: 16,
   },
   row: {
@@ -248,8 +248,8 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   modalContent: {
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
+    borderTopLeftRadius: 12,
+    borderTopRightRadius: 12,
     paddingBottom: 20,
   },
   modalHeader: {

@@ -455,7 +455,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 12,
     margin: 16,
-    borderRadius: 8,
+    borderRadius: 4,
   },
   errorText: {
     marginLeft: 8,

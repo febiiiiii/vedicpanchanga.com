@@ -333,7 +333,7 @@ const styles = StyleSheet.create({
   locationDisplay: {
     marginHorizontal: 16,
     marginVertical: 8,
-    borderRadius: 12,
+    borderRadius: 6,
     padding: 16,
     flexDirection: 'row',
     alignItems: 'center',
