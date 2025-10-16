@@ -85,17 +85,20 @@ class Analytics {
         ANALYTICS_CONFIG.POSTHOG.API_KEY,
         {
           host: ANALYTICS_CONFIG.POSTHOG.HOST,
-          // Enable only on production
-          enable: __DEV__ ? false : true,
           // Capture app lifecycle events automatically
           captureApplicationLifecycleEvents: true,
           // Capture screen views automatically
           captureScreens: true,
-          // Disable in development
+          // Batch settings
           flushInterval: 30,
           flushAt: 20,
         }
       );
+
+      // Disable in development
+      if (__DEV__) {
+        this.posthog.optOut();
+      }
 
       console.log('PostHog initialized successfully');
     } catch (error) {
@@ -113,7 +116,7 @@ class Analytics {
       this.gtag = {
         endpoint: `https://www.google-analytics.com/mp/collect`,
         measurementId: ANALYTICS_CONFIG.GOOGLE_ANALYTICS.MEASUREMENT_ID,
-        apiSecret: process.env.GA_API_SECRET || '', // Optional for enhanced measurement
+        apiSecret: process.env.EXPO_PUBLIC_GA_API_SECRET || '', // Optional for enhanced measurement
       };
 
       console.log('Google Analytics initialized successfully');
