@@ -196,12 +196,89 @@ export interface ChoghadiyaTime {
   endTime: string;
 }
 
-// API Response Types
+// API Response Types matching backend
+export interface TimeValue {
+  hours: number;
+  minutes: number;
+  seconds: number;
+}
+
+export interface TimeRangeResponse {
+  start: TimeValue;
+  end: TimeValue;
+}
+
+export interface TithiResponse {
+  index: number;
+  name: string;
+  end_time: TimeValue;
+}
+
+export interface NakshatraResponse {
+  index: number;
+  name: string;
+  end_time: TimeValue;
+}
+
+export interface YogaResponse {
+  index: number;
+  name: string;
+  end_time: TimeValue;
+}
+
+export interface KaranaResponse {
+  index: number;
+  name: string;
+  end_time: TimeValue;
+}
+
+export interface MasaResponse {
+  index: number;
+  name: string;
+  is_leap: boolean;
+}
+
+export interface PanchangaData {
+  tithi: TithiResponse;
+  nakshatra: NakshatraResponse;
+  yoga: YogaResponse;
+  karana: KaranaResponse;
+  vaara: { index: number; name: string; lord: string };
+  masa: MasaResponse;
+  ritu: { index: number; name: string };
+  samvatsara: { index: number; name: string };
+  sunrise: TimeValue;
+  sunset: TimeValue;
+  moonrise: TimeValue;
+  moonset: TimeValue;
+  day_duration: TimeValue;
+  rahu_kala: TimeRangeResponse;
+  yama_ganda: TimeRangeResponse;
+  gulika_kala: TimeRangeResponse;
+  abhijit_muhurta: TimeRangeResponse;
+  ayanamsha: number;
+  ahargana: number;
+  saka_year: number;
+  kali_year: number;
+  birth_chart?: string;
+}
+
+export interface PlanetaryPositionsResponse {
+  positions: PlanetPosition[];
+  ascendant: Ascendant;
+}
+
+export interface VimsottariDashaResponse {
+  mahadashas: CurrentDasha[];
+  current_mahadasha: CurrentDasha;
+  current_bhukti?: CurrentDasha;
+}
+
 export interface PanchangaResponse {
-  panchanga: Panchanga;
-  planetary_positions?: PlanetPosition[];
+  panchanga: PanchangaData;
+  planetary_positions?: PlanetaryPositionsResponse;
   birth_chart?: string; // Base64 encoded image
-  dasha?: CurrentDasha;
+  dasha?: VimsottariDashaResponse;
 }
 
 export interface CitySearchResult {

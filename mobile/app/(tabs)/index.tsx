@@ -15,7 +15,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-import useStore from '../../lib/store';
+import useStore from '../../lib/store/index';
 import { DateTimePicker } from '../../components/inputs/DateTimePicker';
 import { CitySearch } from '../../components/inputs/CitySearch';
 import { Card, InfoCard } from '../../components/ui/Card';
@@ -48,6 +48,18 @@ export default function PanchangaScreen() {
     calculatePanchanga();
   };
 
+  // Helper function to format TimeValue to string
+  const formatTimeValue = (time: any): string => {
+    if (!time) return '--:--';
+    if (typeof time === 'string') return time;
+    if (time.hours !== undefined && time.minutes !== undefined) {
+      const h = String(time.hours).padStart(2, '0');
+      const m = String(time.minutes).padStart(2, '0');
+      return `${h}:${m}`;
+    }
+    return '--:--';
+  };
+
   const renderPanchangaElements = () => {
     if (!panchangaData?.panchanga) return null;
 
@@ -62,10 +74,10 @@ export default function PanchangaScreen() {
               <View>
                 <Text variant="titleMedium">{tithi.name}</Text>
                 <Text variant="bodySmall" style={styles.subtitle}>
-                  {tithi.paksha} Paksha • {tithi.percentage.toFixed(1)}%
+                  Index: {tithi.index}
                 </Text>
                 <Text variant="bodySmall" style={styles.endTime}>
-                  Until {tithi.endTime}
+                  Until {formatTimeValue(tithi.end_time)}
                 </Text>
               </View>
             }
@@ -85,10 +97,10 @@ export default function PanchangaScreen() {
               <View>
                 <Text variant="titleMedium">{nakshatra.name}</Text>
                 <Text variant="bodySmall" style={styles.subtitle}>
-                  Pada {nakshatra.pada} • Lord: {nakshatra.lord}
+                  Index: {nakshatra.index}
                 </Text>
                 <Text variant="bodySmall" style={styles.endTime}>
-                  Until {nakshatra.endTime}
+                  Until {formatTimeValue(nakshatra.end_time)}
                 </Text>
               </View>
             }
@@ -108,7 +120,7 @@ export default function PanchangaScreen() {
               <View>
                 <Text variant="titleMedium">{yoga.name}</Text>
                 <Text variant="bodySmall" style={styles.endTime}>
-                  Until {yoga.endTime}
+                  Until {formatTimeValue(yoga.end_time)}
                 </Text>
               </View>
             }
@@ -128,7 +140,7 @@ export default function PanchangaScreen() {
               <View>
                 <Text variant="titleMedium">{karana.name}</Text>
                 <Text variant="bodySmall" style={styles.endTime}>
-                  Until {karana.endTime}
+                  Until {formatTimeValue(karana.end_time)}
                 </Text>
               </View>
             }
@@ -183,7 +195,7 @@ export default function PanchangaScreen() {
             <Text variant="labelSmall" style={styles.timingLabel}>
               Sunrise
             </Text>
-            <Text variant="titleMedium">{sunrise}</Text>
+            <Text variant="titleMedium">{formatTimeValue(sunrise)}</Text>
           </View>
 
           <View style={styles.timingItem}>
@@ -195,7 +207,7 @@ export default function PanchangaScreen() {
             <Text variant="labelSmall" style={styles.timingLabel}>
               Sunset
             </Text>
-            <Text variant="titleMedium">{sunset}</Text>
+            <Text variant="titleMedium">{formatTimeValue(sunset)}</Text>
           </View>
 
           <View style={styles.timingItem}>
@@ -207,7 +219,7 @@ export default function PanchangaScreen() {
             <Text variant="labelSmall" style={styles.timingLabel}>
               Moonrise
             </Text>
-            <Text variant="titleMedium">{moonrise}</Text>
+            <Text variant="titleMedium">{formatTimeValue(moonrise)}</Text>
           </View>
 
           <View style={styles.timingItem}>
@@ -219,7 +231,7 @@ export default function PanchangaScreen() {
             <Text variant="labelSmall" style={styles.timingLabel}>
               Moonset
             </Text>
-            <Text variant="titleMedium">{moonset}</Text>
+            <Text variant="titleMedium">{formatTimeValue(moonset)}</Text>
           </View>
         </View>
       </Card>
@@ -227,55 +239,55 @@ export default function PanchangaScreen() {
   };
 
   const renderMuhurta = () => {
-    if (!panchangaData?.panchanga?.muhurta) return null;
+    if (!panchangaData?.panchanga) return null;
 
-    const { abhijit, rahuKala, yamaGanda, gulikaKala } = panchangaData.panchanga.muhurta;
+    const { abhijit_muhurta, rahu_kala, yama_ganda, gulika_kala } = panchangaData.panchanga;
 
     return (
       <Card title="Muhurta Timings" style={styles.card}>
-        {abhijit && (
+        {abhijit_muhurta && (
           <View style={styles.muhurtaItem}>
             <View style={[styles.muhurtaIndicator, { backgroundColor: '#4CAF50' }]} />
             <View style={styles.muhurtaContent}>
               <Text variant="titleSmall">Abhijit Muhurta</Text>
               <Text variant="bodyMedium" style={styles.muhurtaTiming}>
-                {abhijit.start} - {abhijit.end}
+                {formatTimeValue(abhijit_muhurta.start)} - {formatTimeValue(abhijit_muhurta.end)}
               </Text>
             </View>
           </View>
         )}
 
-        {rahuKala && (
+        {rahu_kala && (
           <View style={styles.muhurtaItem}>
             <View style={[styles.muhurtaIndicator, { backgroundColor: '#F44336' }]} />
             <View style={styles.muhurtaContent}>
               <Text variant="titleSmall">Rahu Kala</Text>
               <Text variant="bodyMedium" style={styles.muhurtaTiming}>
-                {rahuKala.start} - {rahuKala.end}
+                {formatTimeValue(rahu_kala.start)} - {formatTimeValue(rahu_kala.end)}
               </Text>
             </View>
           </View>
         )}
 
-        {yamaGanda && (
+        {yama_ganda && (
           <View style={styles.muhurtaItem}>
             <View style={[styles.muhurtaIndicator, { backgroundColor: '#FF9800' }]} />
             <View style={styles.muhurtaContent}>
               <Text variant="titleSmall">Yama Ganda</Text>
               <Text variant="bodyMedium" style={styles.muhurtaTiming}>
-                {yamaGanda.start} - {yamaGanda.end}
+                {formatTimeValue(yama_ganda.start)} - {formatTimeValue(yama_ganda.end)}
               </Text>
             </View>
           </View>
         )}
 
-        {gulikaKala && (
+        {gulika_kala && (
           <View style={styles.muhurtaItem}>
             <View style={[styles.muhurtaIndicator, { backgroundColor: '#9C27B0' }]} />
             <View style={styles.muhurtaContent}>
               <Text variant="titleSmall">Gulika Kala</Text>
               <Text variant="bodyMedium" style={styles.muhurtaTiming}>
-                {gulikaKala.start} - {gulikaKala.end}
+                {formatTimeValue(gulika_kala.start)} - {formatTimeValue(gulika_kala.end)}
               </Text>
             </View>
           </View>
@@ -334,36 +346,32 @@ export default function PanchangaScreen() {
             {renderMuhurta()}
 
             {/* Vedic Calendar */}
-            {panchangaData.panchanga.calendar && (
+            {panchangaData.panchanga && (
               <Card title="Vedic Calendar" style={styles.card}>
                 <View style={styles.calendarGrid}>
                   <InfoCard
                     label="Masa"
-                    value={
-                      typeof panchangaData.panchanga.calendar.masa === 'object'
-                        ? panchangaData.panchanga.calendar.masa.name
-                        : panchangaData.panchanga.calendar.masa
-                    }
+                    value={panchangaData.panchanga.masa?.name || 'N/A'}
                   />
                   <InfoCard
                     label="Ritu"
-                    value={
-                      typeof panchangaData.panchanga.calendar.ritu === 'object'
-                        ? panchangaData.panchanga.calendar.ritu.name
-                        : panchangaData.panchanga.calendar.ritu
-                    }
+                    value={panchangaData.panchanga.ritu?.name || 'N/A'}
                   />
                   <InfoCard
                     label="Samvatsara"
-                    value={
-                      typeof panchangaData.panchanga.calendar.samvatsara === 'object'
-                        ? panchangaData.panchanga.calendar.samvatsara.name
-                        : panchangaData.panchanga.calendar.samvatsara
-                    }
+                    value={panchangaData.panchanga.samvatsara?.name || 'N/A'}
                   />
                   <InfoCard
                     label="Ayanamsha"
-                    value={`${panchangaData.panchanga.ayanamsha.toFixed(4)}°`}
+                    value={`${panchangaData.panchanga.ayanamsha?.toFixed(4) || 0}°`}
+                  />
+                  <InfoCard
+                    label="Saka Year"
+                    value={`${panchangaData.panchanga.saka_year || 'N/A'}`}
+                  />
+                  <InfoCard
+                    label="Kali Year"
+                    value={`${panchangaData.panchanga.kali_year || 'N/A'}`}
                   />
                 </View>
               </Card>

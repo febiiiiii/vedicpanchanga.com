@@ -69,9 +69,13 @@ export const InfoCard: React.FC<InfoCardProps> = ({
           {label}
         </Text>
       </View>
-      <Text variant="titleMedium" style={styles.infoValue}>
-        {value}
-      </Text>
+      {typeof value === 'string' ? (
+        <Text variant="titleMedium" style={styles.infoValue}>
+          {value}
+        </Text>
+      ) : (
+        <View>{value}</View>
+      )}
     </View>
   );
 };

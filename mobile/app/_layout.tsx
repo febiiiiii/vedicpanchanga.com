@@ -3,7 +3,7 @@ import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Provider as PaperProvider, MD3LightTheme, MD3DarkTheme } from 'react-native-paper';
 import { useColorScheme } from 'react-native';
-import useStore from '../lib/store';
+import useStore from '../lib/store/index';
 import { useEffect } from 'react';
 import * as SplashScreen from 'expo-splash-screen';
 
