@@ -66,6 +66,10 @@ export function SettingsPanel({
                   mode="single"
                   selected={selectedDate}
                   onSelect={(date) => date && setSelectedDate(date)}
+                  captionLayout="dropdown"
+                  startMonth={new Date(1900, 0)}
+                  endMonth={new Date(2100, 11)}
+                  defaultMonth={selectedDate || new Date()}
                 />
               </PopoverContent>
             </Popover>
