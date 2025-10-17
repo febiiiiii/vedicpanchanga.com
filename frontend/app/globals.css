@@ -54,45 +54,108 @@
   --shadow-lg: var(--shadow-lg);
   --shadow-xl: var(--shadow-xl);
   --shadow-2xl: var(--shadow-2xl);
+
+  /* Typography Scale for Better Readability Across All Devices */
+  --font-size-xs: 0.75rem;     /* 12px - Small labels, mobile captions */
+  --font-size-sm: 0.875rem;    /* 14px - Secondary text, mobile body */
+  --font-size-base: 1rem;      /* 16px - Standard body text */
+  --font-size-lg: 1.125rem;    /* 18px - Large body, tablet standard */
+  --font-size-xl: 1.25rem;     /* 20px - Small headings */
+  --font-size-2xl: 1.5rem;     /* 24px - H5, mobile headers */
+  --font-size-3xl: 1.875rem;   /* 30px - H4, tablet headers */
+  --font-size-4xl: 2.25rem;    /* 36px - H3, desktop headers */
+  --font-size-5xl: 3rem;       /* 48px - H2, large displays */
+  --font-size-6xl: 3.75rem;    /* 60px - H1, hero sections */
+
+  /* Line heights optimized for readability */
+  --leading-tight: 1.25;        /* Compact headings */
+  --leading-snug: 1.375;        /* Sub-headings */
+  --leading-normal: 1.5;        /* Body text standard */
+  --leading-relaxed: 1.625;     /* Comfortable reading */
+  --leading-loose: 1.75;        /* Spacious paragraphs */
+
+  /* Font weights for hierarchy */
+  --font-thin: 100;
+  --font-light: 300;
+  --font-normal: 400;
+  --font-medium: 500;
+  --font-semibold: 600;
+  --font-bold: 700;
+  --font-extrabold: 800;
+  --font-black: 900;
+
+  /* Letter spacing for improved legibility */
+  --tracking-tighter: -0.05em;  /* Dense headings */
+  --tracking-tight: -0.025em;   /* Compact text */
+  --tracking-normal: 0em;       /* Standard spacing */
+  --tracking-wide: 0.025em;     /* Improved readability */
+  --tracking-wider: 0.05em;     /* Spacious text */
+  --tracking-widest: 0.1em;     /* Maximum spacing */
 }
 
 :root {
-  --background: oklch(1.0000 0 0);
-  --foreground: oklch(0.2686 0 0);
-  --card: oklch(1.0000 0 0);
-  --card-foreground: oklch(0.2686 0 0);
-  --popover: oklch(1.0000 0 0);
-  --popover-foreground: oklch(0.2686 0 0);
-  --primary: oklch(0.7686 0.1647 70.0804);
-  --primary-foreground: oklch(0 0 0);
-  --secondary: oklch(0.9670 0.0029 264.5419);
-  --secondary-foreground: oklch(0.4461 0.0263 256.8018);
-  --muted: oklch(0.9846 0.0017 247.8389);
-  --muted-foreground: oklch(0.5510 0.0234 264.3637);
-  --accent: oklch(0.9869 0.0214 95.2774);
-  --accent-foreground: oklch(0.4732 0.1247 46.2007);
-  --destructive: oklch(0.6368 0.2078 25.3313);
-  --destructive-foreground: oklch(1.0000 0 0);
-  --border: oklch(0.9276 0.0058 264.5313);
-  --input: oklch(0.9276 0.0058 264.5313);
-  --ring: oklch(0.7686 0.1647 70.0804);
-  --chart-1: oklch(0.7686 0.1647 70.0804);
-  --chart-2: oklch(0.6658 0.1574 58.3183);
-  --chart-3: oklch(0.5553 0.1455 48.9975);
-  --chart-4: oklch(0.4732 0.1247 46.2007);
-  --chart-5: oklch(0.4137 0.1054 45.9038);
-  --sidebar: oklch(0.9846 0.0017 247.8389);
-  --sidebar-foreground: oklch(0.2686 0 0);
-  --sidebar-primary: oklch(0.7686 0.1647 70.0804);
-  --sidebar-primary-foreground: oklch(1.0000 0 0);
-  --sidebar-accent: oklch(0.9869 0.0214 95.2774);
-  --sidebar-accent-foreground: oklch(0.4732 0.1247 46.2007);
-  --sidebar-border: oklch(0.9276 0.0058 264.5313);
-  --sidebar-ring: oklch(0.7686 0.1647 70.0804);
+  /* Clean, professional white */
+  --background: oklch(0.99 0.002 265);
+  --foreground: oklch(0.20 0.005 265);
+
+  /* Subtle card elevation */
+  --card: oklch(1.0 0 0);
+  --card-foreground: oklch(0.20 0.005 265);
+
+  /* Popover with depth */
+  --popover: oklch(1.0 0 0);
+  --popover-foreground: oklch(0.20 0.005 265);
+
+  /* Warm, professional primary - orange-gold */
+  --primary: oklch(0.65 0.18 55);
+  --primary-foreground: oklch(0.99 0 0);
+
+  /* Soft secondary */
+  --secondary: oklch(0.96 0.008 265);
+  --secondary-foreground: oklch(0.35 0.02 265);
+
+  /* Improved muted areas */
+  --muted: oklch(0.97 0.005 265);
+  --muted-foreground: oklch(0.50 0.015 265);
+
+  /* Warm accent */
+  --accent: oklch(0.97 0.015 50);
+  --accent-foreground: oklch(0.40 0.12 45);
+
+  /* Professional destructive */
+  --destructive: oklch(0.55 0.22 25);
+  --destructive-foreground: oklch(1.0 0 0);
+
+  /* Subtle borders */
+  --border: oklch(0.90 0.006 265);
+  --input: oklch(0.90 0.006 265);
+
+  /* Focus ring */
+  --ring: oklch(0.65 0.18 55);
+
+  /* Chart colors optimized for light backgrounds */
+  --chart-1: oklch(0.65 0.18 55);   /* Primary orange */
+  --chart-2: oklch(0.58 0.16 150);  /* Teal */
+  --chart-3: oklch(0.55 0.15 270);  /* Purple */
+  --chart-4: oklch(0.52 0.18 30);   /* Red */
+  --chart-5: oklch(0.48 0.16 240);  /* Blue */
+
+  /* Sidebar */
+  --sidebar: oklch(0.97 0.005 265);
+  --sidebar-foreground: oklch(0.20 0.005 265);
+  --sidebar-primary: oklch(0.65 0.18 55);
+  --sidebar-primary-foreground: oklch(0.99 0 0);
+  --sidebar-accent: oklch(0.97 0.015 50);
+  --sidebar-accent-foreground: oklch(0.40 0.12 45);
+  --sidebar-border: oklch(0.90 0.006 265);
+  --sidebar-ring: oklch(0.65 0.18 55);
+
   --font-sans: Inter, sans-serif;
   --font-serif: Source Serif 4, serif;
   --font-mono: JetBrains Mono, monospace;
-  --radius: 0.20rem;
+
+  /* Radius - slightly larger for modern feel */
+  --radius: 0.5rem;
   --shadow-x: 0px;
   --shadow-y: 4px;
   --shadow-blur: 8px;
@@ -112,56 +175,77 @@
 }
 
 .dark {
-  --background: oklch(0.2046 0 0);
-  --foreground: oklch(0.9219 0 0);
-  --card: oklch(0.2686 0 0);
-  --card-foreground: oklch(0.9219 0 0);
-  --popover: oklch(0.2686 0 0);
-  --popover-foreground: oklch(0.9219 0 0);
-  --primary: oklch(0.7686 0.1647 70.0804);
-  --primary-foreground: oklch(0 0 0);
-  --secondary: oklch(0.2686 0 0);
-  --secondary-foreground: oklch(0.9219 0 0);
-  --muted: oklch(0.2393 0 0);
-  --muted-foreground: oklch(0.7155 0 0);
-  --accent: oklch(0.4732 0.1247 46.2007);
-  --accent-foreground: oklch(0.9243 0.1151 95.7459);
-  --destructive: oklch(0.6368 0.2078 25.3313);
-  --destructive-foreground: oklch(1.0000 0 0);
-  --border: oklch(0.3715 0 0);
-  --input: oklch(0.3715 0 0);
-  --ring: oklch(0.7686 0.1647 70.0804);
-  --chart-1: oklch(0.8369 0.1644 84.4286);
-  --chart-2: oklch(0.6658 0.1574 58.3183);
-  --chart-3: oklch(0.4732 0.1247 46.2007);
-  --chart-4: oklch(0.5553 0.1455 48.9975);
-  --chart-5: oklch(0.4732 0.1247 46.2007);
-  --sidebar: oklch(0.1684 0 0);
-  --sidebar-foreground: oklch(0.9219 0 0);
-  --sidebar-primary: oklch(0.7686 0.1647 70.0804);
-  --sidebar-primary-foreground: oklch(1.0000 0 0);
-  --sidebar-accent: oklch(0.4732 0.1247 46.2007);
-  --sidebar-accent-foreground: oklch(0.9243 0.1151 95.7459);
-  --sidebar-border: oklch(0.3715 0 0);
-  --sidebar-ring: oklch(0.7686 0.1647 70.0804);
+  /* Lighter, more comfortable dark background */
+  --background: oklch(0.26 0.01 250);
+  --foreground: oklch(0.96 0.002 250);
+
+  /* Card with clear separation from background */
+  --card: oklch(0.30 0.012 250);
+  --card-foreground: oklch(0.96 0.002 250);
+
+  /* Popover with subtle elevation */
+  --popover: oklch(0.32 0.012 250);
+  --popover-foreground: oklch(0.96 0.002 250);
+
+  /* Vibrant but readable primary - orange-gold theme */
+  --primary: oklch(0.72 0.15 60);
+  --primary-foreground: oklch(0.20 0 0);
+
+  /* Enhanced secondary with better visibility */
+  --secondary: oklch(0.34 0.015 250);
+  --secondary-foreground: oklch(0.94 0.002 250);
+
+  /* Muted areas with improved readability */
+  --muted: oklch(0.32 0.01 250);
+  --muted-foreground: oklch(0.78 0.004 250);
+
+  /* Accent with warmth */
+  --accent: oklch(0.36 0.04 55);
+  --accent-foreground: oklch(0.96 0.002 250);
+
+  /* Destructive that stands out */
+  --destructive: oklch(0.58 0.22 25);
+  --destructive-foreground: oklch(1.0 0 0);
+
+  /* Clearer borders for better definition */
+  --border: oklch(0.38 0.012 250);
+  --input: oklch(0.34 0.012 250);
+
+  /* Ring for focus states */
+  --ring: oklch(0.72 0.15 60);
+
+  /* Professional chart colors for dark mode */
+  --chart-1: oklch(0.75 0.15 60);   /* Warm orange */
+  --chart-2: oklch(0.68 0.18 150);  /* Teal */
+  --chart-3: oklch(0.72 0.16 270);  /* Purple */
+  --chart-4: oklch(0.70 0.20 30);   /* Red-orange */
+  --chart-5: oklch(0.65 0.18 200);  /* Blue */
+
+  /* Sidebar with distinct hierarchy */
+  --sidebar: oklch(0.24 0.01 250);
+  --sidebar-foreground: oklch(0.94 0.002 250);
+  --sidebar-primary: oklch(0.72 0.15 60);
+  --sidebar-primary-foreground: oklch(0.20 0 0);
+  --sidebar-accent: oklch(0.36 0.04 55);
+  --sidebar-accent-foreground: oklch(0.96 0.002 250);
+  --sidebar-border: oklch(0.36 0.012 250);
+  --sidebar-ring: oklch(0.72 0.15 60);
+
   --font-sans: Inter, sans-serif;
   --font-serif: Source Serif 4, serif;
   --font-mono: JetBrains Mono, monospace;
-  --radius: 0.25rem;
-  --shadow-x: 0px;
-  --shadow-y: 4px;
-  --shadow-blur: 8px;
-  --shadow-spread: -1px;
-  --shadow-opacity: 0.1;
-  --shadow-color: hsl(0 0% 0%);
-  --shadow-2xs: 0px 1px 2px 0px hsl(0 0% 0% / 0.02);
-  --shadow-xs: 0px 1px 2px 0px hsl(0 0% 0% / 0.03);
-  --shadow-sm: 0px 1px 3px 0px hsl(0 0% 0% / 0.04), 0px 1px 2px 0px hsl(0 0% 0% / 0.03);
-  --shadow: 0px 2px 4px 0px hsl(0 0% 0% / 0.04), 0px 1px 2px 0px hsl(0 0% 0% / 0.03);
-  --shadow-md: 0px 4px 6px -1px hsl(0 0% 0% / 0.05), 0px 2px 4px -1px hsl(0 0% 0% / 0.03);
-  --shadow-lg: 0px 10px 15px -3px hsl(0 0% 0% / 0.06), 0px 4px 6px -2px hsl(0 0% 0% / 0.03);
-  --shadow-xl: 0px 20px 25px -5px hsl(0 0% 0% / 0.08), 0px 10px 10px -5px hsl(0 0% 0% / 0.04);
-  --shadow-2xl: 0px 25px 50px -12px hsl(0 0% 0% / 0.10);
+  --radius: 0.375rem;
+
+  /* Balanced shadows for lighter dark mode */
+  --shadow-color: hsl(250 10% 10%);
+  --shadow-2xs: 0px 1px 2px 0px hsl(250 10% 10% / 0.10);
+  --shadow-xs: 0px 1px 2px 0px hsl(250 10% 10% / 0.15);
+  --shadow-sm: 0px 1px 3px 0px hsl(250 10% 10% / 0.18), 0px 1px 2px 0px hsl(250 10% 10% / 0.15);
+  --shadow: 0px 2px 4px 0px hsl(250 10% 10% / 0.20), 0px 1px 2px 0px hsl(250 10% 10% / 0.18);
+  --shadow-md: 0px 4px 6px -1px hsl(250 10% 10% / 0.25), 0px 2px 4px -1px hsl(250 10% 10% / 0.20);
+  --shadow-lg: 0px 10px 15px -3px hsl(250 10% 10% / 0.30), 0px 4px 6px -2px hsl(250 10% 10% / 0.25);
+  --shadow-xl: 0px 20px 25px -5px hsl(250 10% 10% / 0.35), 0px 10px 10px -5px hsl(250 10% 10% / 0.30);
+  --shadow-2xl: 0px 25px 50px -12px hsl(250 10% 10% / 0.40);
 }
 
 @layer base {
@@ -368,5 +452,185 @@
 
   .dark .card-professional:hover {
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+  }
+
+  /* Color-coded Panchanga Section Classes for Better Visual Hierarchy */
+
+  /* Tithi - Lunar day - warm orange tones */
+  .panchanga-tithi {
+    @apply border-l-4 border-orange-500/50 bg-gradient-to-r from-orange-50/50 to-transparent dark:from-orange-950/20 dark:border-orange-600/40;
+    padding-left: 1rem;
+    transition: all 0.3s ease;
+  }
+  .panchanga-tithi:hover {
+    @apply border-orange-500 dark:border-orange-500;
+  }
+
+  /* Nakshatra - Lunar mansion - deep blue/purple tones */
+  .panchanga-nakshatra {
+    @apply border-l-4 border-indigo-500/50 bg-gradient-to-r from-indigo-50/50 to-transparent dark:from-indigo-950/20 dark:border-indigo-600/40;
+    padding-left: 1rem;
+    transition: all 0.3s ease;
+  }
+  .panchanga-nakshatra:hover {
+    @apply border-indigo-500 dark:border-indigo-500;
+  }
+
+  /* Yoga - Auspicious combination - green tones */
+  .panchanga-yoga {
+    @apply border-l-4 border-emerald-500/50 bg-gradient-to-r from-emerald-50/50 to-transparent dark:from-emerald-950/20 dark:border-emerald-600/40;
+    padding-left: 1rem;
+    transition: all 0.3s ease;
+  }
+  .panchanga-yoga:hover {
+    @apply border-emerald-500 dark:border-emerald-500;
+  }
+
+  /* Karana - Half lunar day - amber tones */
+  .panchanga-karana {
+    @apply border-l-4 border-amber-500/50 bg-gradient-to-r from-amber-50/50 to-transparent dark:from-amber-950/20 dark:border-amber-600/40;
+    padding-left: 1rem;
+    transition: all 0.3s ease;
+  }
+  .panchanga-karana:hover {
+    @apply border-amber-500 dark:border-amber-500;
+  }
+
+  /* Vara - Weekday - purple tones */
+  .panchanga-vara {
+    @apply border-l-4 border-purple-500/50 bg-gradient-to-r from-purple-50/50 to-transparent dark:from-purple-950/20 dark:border-purple-600/40;
+    padding-left: 1rem;
+    transition: all 0.3s ease;
+  }
+  .panchanga-vara:hover {
+    @apply border-purple-500 dark:border-purple-500;
+  }
+
+  /* Muhurta - Auspicious timing - teal tones */
+  .panchanga-muhurta {
+    @apply border-l-4 border-teal-500/50 bg-gradient-to-r from-teal-50/50 to-transparent dark:from-teal-950/20 dark:border-teal-600/40;
+    padding-left: 1rem;
+    transition: all 0.3s ease;
+  }
+  .panchanga-muhurta:hover {
+    @apply border-teal-500 dark:border-teal-500;
+  }
+
+  /* Rashi - Zodiac sign - rose tones */
+  .panchanga-rashi {
+    @apply border-l-4 border-rose-500/50 bg-gradient-to-r from-rose-50/50 to-transparent dark:from-rose-950/20 dark:border-rose-600/40;
+    padding-left: 1rem;
+    transition: all 0.3s ease;
+  }
+  .panchanga-rashi:hover {
+    @apply border-rose-500 dark:border-rose-500;
+  }
+
+  /* Planetary positions - sky blue tones */
+  .panchanga-graha {
+    @apply border-l-4 border-sky-500/50 bg-gradient-to-r from-sky-50/50 to-transparent dark:from-sky-950/20 dark:border-sky-600/40;
+    padding-left: 1rem;
+    transition: all 0.3s ease;
+  }
+  .panchanga-graha:hover {
+    @apply border-sky-500 dark:border-sky-500;
+  }
+
+  /* General Panchanga info card with subtle gradient */
+  .panchanga-info-card {
+    @apply rounded-lg p-4 bg-gradient-to-br from-background to-muted/20 border border-border/50 shadow-sm hover:shadow-md transition-all duration-300;
+  }
+
+  /* Highlight for important/auspicious items */
+  .panchanga-auspicious {
+    @apply relative;
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to right, rgb(250 204 21 / 0.1), transparent);
+      border-radius: 0.5rem;
+      animation: pulse-soft 2s ease-in-out infinite;
+    }
+  }
+
+  /* Badge styles for Panchanga attributes */
+  .panchanga-badge {
+    @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium transition-colors;
+  }
+
+  .panchanga-badge-tithi {
+    @apply bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300;
+  }
+
+  .panchanga-badge-nakshatra {
+    @apply bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-300;
+  }
+
+  .panchanga-badge-yoga {
+    @apply bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300;
+  }
+
+  .panchanga-badge-karana {
+    @apply bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300;
+  }
+
+  /* Time display with enhanced readability */
+  .panchanga-time {
+    @apply font-mono text-sm tracking-wider text-muted-foreground dark:text-muted-foreground/80;
+  }
+
+  /* Section headers with decorative elements */
+  .panchanga-section-header {
+    @apply relative text-lg font-semibold tracking-wide pb-2 mb-3;
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 0.125rem;
+      width: 3rem;
+      background: var(--primary);
+      opacity: 0.5;
+      border-radius: 9999px;
+    }
+  }
+
+  /* Enhanced touch targets for better mobile usability */
+  .touch-target {
+    position: relative;
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  .touch-target-sm {
+    position: relative;
+    min-height: 36px;
+    min-width: 36px;
+  }
+
+  .touch-target-lg {
+    position: relative;
+    min-height: 48px;
+    min-width: 48px;
+  }
+
+  /* Improved spacing for navigation items */
+  .nav-spacing {
+    @apply gap-2 md:gap-3 lg:gap-4;
+  }
+
+  /* Enhanced focus states for better accessibility */
+  .focus-enhanced {
+    @apply focus:outline-none focus:ring-2 focus:ring-primary/30 focus:ring-offset-2 focus:ring-offset-background;
+  }
+
+  /* Button group spacing */
+  .button-group {
+    @apply flex items-center gap-2 md:gap-3;
+  }
+
+  .button-group-vertical {
+    @apply flex flex-col gap-2 md:gap-3;
   }
 }

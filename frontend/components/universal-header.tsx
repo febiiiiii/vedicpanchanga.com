@@ -50,22 +50,22 @@ export function UniversalHeader() {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-1">
+          <nav className="hidden md:flex items-center gap-2 lg:gap-3">
             {navItems.map((item) => {
               const Icon = item.icon;
               return (
                 <Link key={item.href} href={item.href}>
                   <Button
-                    variant={isActive(item.href) ? "default" : "ghost"}
+                    variant="ghost"
                     size="sm"
-                    className={`gap-2 ${
+                    className={`gap-2 px-3 py-2 h-10 min-w-[90px] transition-all duration-200 ${
                       isActive(item.href)
-                        ? 'bg-primary/10 text-primary hover:bg-primary/20'
-                        : 'hover:bg-accent'
+                        ? 'bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm'
+                        : 'text-foreground hover:bg-primary/10 hover:text-primary hover:shadow-sm'
                     }`}
                   >
-                    <Icon className="h-4 w-4" />
-                    {item.label}
+                    <Icon className={`h-4 w-4 ${isActive(item.href) ? '' : 'text-primary'}`} />
+                    <span className="font-medium">{item.label}</span>
                   </Button>
                 </Link>
               );
@@ -101,19 +101,21 @@ export function UniversalHeader() {
                   <Menu className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuContent align="end" className="w-56">
                 {navItems.map((item) => {
                   const Icon = item.icon;
                   return (
                     <DropdownMenuItem key={item.href} asChild>
                       <Link
                         href={item.href}
-                        className={`flex items-center gap-2 ${
-                          isActive(item.href) ? 'bg-primary/10 text-primary' : ''
+                        className={`flex items-center gap-3 py-3 px-3 min-h-[48px] transition-colors duration-200 ${
+                          isActive(item.href)
+                            ? 'bg-primary text-primary-foreground font-medium'
+                            : 'hover:bg-primary/10 hover:text-primary'
                         }`}
                       >
-                        <Icon className="h-4 w-4" />
-                        {item.label}
+                        <Icon className={`h-5 w-5 ${isActive(item.href) ? '' : 'text-primary'}`} />
+                        <span className="font-medium">{item.label}</span>
                       </Link>
                     </DropdownMenuItem>
                   );
