@@ -92,21 +92,21 @@
   --font-sans: Inter, sans-serif;
   --font-serif: Source Serif 4, serif;
   --font-mono: JetBrains Mono, monospace;
-  --radius: 0.375rem;
+  --radius: 0.20rem;
   --shadow-x: 0px;
   --shadow-y: 4px;
   --shadow-blur: 8px;
   --shadow-spread: -1px;
   --shadow-opacity: 0.1;
   --shadow-color: hsl(0 0% 0%);
-  --shadow-2xs: 0px 4px 8px -1px hsl(0 0% 0% / 0.05);
-  --shadow-xs: 0px 4px 8px -1px hsl(0 0% 0% / 0.05);
-  --shadow-sm: 0px 4px 8px -1px hsl(0 0% 0% / 0.10), 0px 1px 2px -2px hsl(0 0% 0% / 0.10);
-  --shadow: 0px 4px 8px -1px hsl(0 0% 0% / 0.10), 0px 1px 2px -2px hsl(0 0% 0% / 0.10);
-  --shadow-md: 0px 4px 8px -1px hsl(0 0% 0% / 0.10), 0px 2px 4px -2px hsl(0 0% 0% / 0.10);
-  --shadow-lg: 0px 4px 8px -1px hsl(0 0% 0% / 0.10), 0px 4px 6px -2px hsl(0 0% 0% / 0.10);
-  --shadow-xl: 0px 4px 8px -1px hsl(0 0% 0% / 0.10), 0px 8px 10px -2px hsl(0 0% 0% / 0.10);
-  --shadow-2xl: 0px 4px 8px -1px hsl(0 0% 0% / 0.25);
+  --shadow-2xs: 0px 1px 2px 0px hsl(0 0% 0% / 0.02);
+  --shadow-xs: 0px 1px 2px 0px hsl(0 0% 0% / 0.03);
+  --shadow-sm: 0px 1px 3px 0px hsl(0 0% 0% / 0.04), 0px 1px 2px 0px hsl(0 0% 0% / 0.03);
+  --shadow: 0px 2px 4px 0px hsl(0 0% 0% / 0.04), 0px 1px 2px 0px hsl(0 0% 0% / 0.03);
+  --shadow-md: 0px 4px 6px -1px hsl(0 0% 0% / 0.05), 0px 2px 4px -1px hsl(0 0% 0% / 0.03);
+  --shadow-lg: 0px 10px 15px -3px hsl(0 0% 0% / 0.06), 0px 4px 6px -2px hsl(0 0% 0% / 0.03);
+  --shadow-xl: 0px 20px 25px -5px hsl(0 0% 0% / 0.08), 0px 10px 10px -5px hsl(0 0% 0% / 0.04);
+  --shadow-2xl: 0px 25px 50px -12px hsl(0 0% 0% / 0.10);
   --tracking-normal: 0em;
   --spacing: 0.25rem;
 }
@@ -147,21 +147,21 @@
   --font-sans: Inter, sans-serif;
   --font-serif: Source Serif 4, serif;
   --font-mono: JetBrains Mono, monospace;
-  --radius: 0.375rem;
+  --radius: 0.25rem;
   --shadow-x: 0px;
   --shadow-y: 4px;
   --shadow-blur: 8px;
   --shadow-spread: -1px;
   --shadow-opacity: 0.1;
   --shadow-color: hsl(0 0% 0%);
-  --shadow-2xs: 0px 4px 8px -1px hsl(0 0% 0% / 0.05);
-  --shadow-xs: 0px 4px 8px -1px hsl(0 0% 0% / 0.05);
-  --shadow-sm: 0px 4px 8px -1px hsl(0 0% 0% / 0.10), 0px 1px 2px -2px hsl(0 0% 0% / 0.10);
-  --shadow: 0px 4px 8px -1px hsl(0 0% 0% / 0.10), 0px 1px 2px -2px hsl(0 0% 0% / 0.10);
-  --shadow-md: 0px 4px 8px -1px hsl(0 0% 0% / 0.10), 0px 2px 4px -2px hsl(0 0% 0% / 0.10);
-  --shadow-lg: 0px 4px 8px -1px hsl(0 0% 0% / 0.10), 0px 4px 6px -2px hsl(0 0% 0% / 0.10);
-  --shadow-xl: 0px 4px 8px -1px hsl(0 0% 0% / 0.10), 0px 8px 10px -2px hsl(0 0% 0% / 0.10);
-  --shadow-2xl: 0px 4px 8px -1px hsl(0 0% 0% / 0.25);
+  --shadow-2xs: 0px 1px 2px 0px hsl(0 0% 0% / 0.02);
+  --shadow-xs: 0px 1px 2px 0px hsl(0 0% 0% / 0.03);
+  --shadow-sm: 0px 1px 3px 0px hsl(0 0% 0% / 0.04), 0px 1px 2px 0px hsl(0 0% 0% / 0.03);
+  --shadow: 0px 2px 4px 0px hsl(0 0% 0% / 0.04), 0px 1px 2px 0px hsl(0 0% 0% / 0.03);
+  --shadow-md: 0px 4px 6px -1px hsl(0 0% 0% / 0.05), 0px 2px 4px -1px hsl(0 0% 0% / 0.03);
+  --shadow-lg: 0px 10px 15px -3px hsl(0 0% 0% / 0.06), 0px 4px 6px -2px hsl(0 0% 0% / 0.03);
+  --shadow-xl: 0px 20px 25px -5px hsl(0 0% 0% / 0.08), 0px 10px 10px -5px hsl(0 0% 0% / 0.04);
+  --shadow-2xl: 0px 25px 50px -12px hsl(0 0% 0% / 0.10);
 }
 
 @layer base {
@@ -174,6 +174,78 @@
 }
 
 @layer utilities {
+  /* Smooth radial gradient backgrounds */
+  .bg-gradient-radial {
+    background: radial-gradient(circle, var(--tw-gradient-stops));
+  }
+
+  .bg-gradient-radial-at-t {
+    background: radial-gradient(circle at top, var(--tw-gradient-stops));
+  }
+
+  .bg-gradient-radial-at-b {
+    background: radial-gradient(circle at bottom, var(--tw-gradient-stops));
+  }
+
+  .bg-gradient-radial-at-l {
+    background: radial-gradient(circle at left, var(--tw-gradient-stops));
+  }
+
+  .bg-gradient-radial-at-r {
+    background: radial-gradient(circle at right, var(--tw-gradient-stops));
+  }
+
+  .bg-gradient-radial-at-tl {
+    background: radial-gradient(circle at top left, var(--tw-gradient-stops));
+  }
+
+  .bg-gradient-radial-at-tr {
+    background: radial-gradient(circle at top right, var(--tw-gradient-stops));
+  }
+
+  .bg-gradient-radial-at-bl {
+    background: radial-gradient(circle at bottom left, var(--tw-gradient-stops));
+  }
+
+  .bg-gradient-radial-at-br {
+    background: radial-gradient(circle at bottom right, var(--tw-gradient-stops));
+  }
+
+  /* Smooth card shadows for depth */
+  .card-shadow {
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.03),
+                0 2px 4px rgba(0, 0, 0, 0.05),
+                0 12px 24px rgba(0, 0, 0, 0.05);
+  }
+
+  .card-shadow-hover {
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.03),
+                0 4px 8px rgba(0, 0, 0, 0.08),
+                0 16px 32px rgba(0, 0, 0, 0.08);
+  }
+
+  .dark .card-shadow {
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06),
+                0 2px 4px rgba(0, 0, 0, 0.2),
+                0 12px 24px rgba(0, 0, 0, 0.3);
+  }
+
+  .dark .card-shadow-hover {
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08),
+                0 4px 8px rgba(0, 0, 0, 0.3),
+                0 16px 32px rgba(0, 0, 0, 0.4);
+  }
+
+  /* Smooth transitions */
+  .transition-smooth {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .transition-smooth-slow {
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Animations */
   @keyframes float {
     0%, 100% {
       transform: translateY(0px);
@@ -202,7 +274,99 @@
     animation: slide-in-from-bottom 0.5s ease-out;
   }
 
-  .transition-all-smooth {
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  .animate-fade-in {
+    animation: fade-in 0.5s ease-out;
+  }
+
+  @keyframes pulse-soft {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.7;
+    }
+  }
+
+  .animate-pulse-soft {
+    animation: pulse-soft 2s ease-in-out infinite;
+  }
+
+  /* Glass morphism effect */
+  .glass {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .dark .glass {
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  /* Smooth border radius */
+  .rounded-smooth {
+    border-radius: 0.75rem;
+  }
+
+  .rounded-smooth-lg {
+    border-radius: 1rem;
+  }
+
+  .rounded-smooth-xl {
+    border-radius: 1.5rem;
+  }
+
+  /* Animation delays */
+  .animation-delay-100 {
+    animation-delay: 100ms;
+  }
+
+  .animation-delay-200 {
+    animation-delay: 200ms;
+  }
+
+  .animation-delay-300 {
+    animation-delay: 300ms;
+  }
+
+  .animation-delay-400 {
+    animation-delay: 400ms;
+  }
+
+  .animation-delay-500 {
+    animation-delay: 500ms;
+  }
+
+  /* Professional card design */
+  .card-professional {
+    border-radius: 1rem;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: var(--card);
+    border: 1px solid var(--border);
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+  }
+
+  .card-professional:hover {
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+  }
+
+  .dark .card-professional {
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3), 0 1px 2px -1px rgba(0, 0, 0, 0.2);
+    background: var(--card);
+  }
+
+  .dark .card-professional:hover {
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
   }
 }
