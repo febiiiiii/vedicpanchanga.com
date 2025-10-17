@@ -59,10 +59,19 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# CORS middleware to allow Next.js app to call this API
+# CORS middleware to allow Next.js and mobile apps to call this API
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3121", "http://localhost:3000"],  # Add your Next.js app URLs
+    allow_origins=[
+        "http://localhost:3121",  # Next.js development
+        "http://localhost:3000",  # Next.js alternative port
+        "http://localhost:8081",  # Expo web
+        "http://localhost:19000", # Expo development
+        "http://localhost:19001", # Expo development
+        "http://localhost:19002", # Expo development
+        "http://10.0.2.2:8121",  # Android emulator
+        "*"  # Allow all origins in development - restrict in production
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

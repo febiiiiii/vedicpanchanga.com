@@ -14,7 +14,8 @@ export default function PlanetsScreen() {
     return <LoadingSpinner fullScreen message="Loading planetary positions..." />;
   }
 
-  if (!panchangaData?.planetary_positions) {
+  // Check if we have planetary positions data
+  if (!panchangaData || !panchangaData.planetary_positions) {
     return (
       <View style={styles.emptyContainer}>
         <Text variant="bodyLarge">
@@ -23,6 +24,13 @@ export default function PlanetsScreen() {
       </View>
     );
   }
+
+  // Handle both possible response structures:
+  // 1. planetary_positions.positions (nested)
+  // 2. planetary_positions as direct array
+  const planets = Array.isArray(panchangaData.planetary_positions)
+    ? panchangaData.planetary_positions
+    : (panchangaData.planetary_positions?.positions || []);
 
   return (
     <SafeAreaView style={styles.container} edges={['bottom']}>
@@ -36,7 +44,7 @@ export default function PlanetsScreen() {
               <DataTable.Title numeric>Degree</DataTable.Title>
             </DataTable.Header>
 
-            {panchangaData.planetary_positions.map((planet, index) => (
+            {planets.map((planet, index) => (
               <DataTable.Row key={index}>
                 <DataTable.Cell>
                   <View style={styles.planetCell}>
@@ -55,25 +63,25 @@ export default function PlanetsScreen() {
                   {planet.nakshatra} {planet.pada ? `(${planet.pada})` : ''}
                 </DataTable.Cell>
                 <DataTable.Cell numeric>
-                  {planet.longitude.toFixed(2)}°
+                  {planet.longitude ? `${planet.longitude.toFixed(2)}°` : '-'}
                 </DataTable.Cell>
               </DataTable.Row>
             ))}
           </DataTable>
         </Card>
 
-        {panchangaData.panchanga.ascendant && (
+        {panchangaData.planetary_positions?.ascendant && (
           <Card title="Ascendant (Lagna)" style={styles.card}>
             <View style={styles.ascendantInfo}>
               <Text variant="bodyLarge">
-                Sign: {panchangaData.panchanga.ascendant.zodiac_sign}
+                Sign: {panchangaData.planetary_positions.ascendant.zodiac_sign}
               </Text>
               <Text variant="bodyMedium">
-                Nakshatra: {panchangaData.panchanga.ascendant.nakshatra}
-                (Pada {panchangaData.panchanga.ascendant.pada})
+                Nakshatra: {panchangaData.planetary_positions.ascendant.nakshatra}
+                (Pada {panchangaData.planetary_positions.ascendant.pada})
               </Text>
               <Text variant="bodyMedium">
-                Degree: {panchangaData.panchanga.ascendant.longitude.toFixed(2)}°
+                Degree: {panchangaData.planetary_positions.ascendant.longitude.toFixed(2)}°
               </Text>
             </View>
           </Card>

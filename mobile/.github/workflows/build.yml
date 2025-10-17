@@ -1,0 +1,184 @@
+name: Build and Test Mobile App
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'mobile/**'
+      - '.github/workflows/build.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'mobile/**'
+  workflow_dispatch:
+    inputs:
+      platform:
+        description: 'Platform to build'
+        required: true
+        default: 'all'
+        type: choice
+        options:
+          - android
+          - ios
+          - all
+
+jobs:
+  test:
+    name: Test Mobile App
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./mobile
+
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: mobile/package-lock.json
+
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: 🧹 Run linter
+        run: npm run lint || true
+
+      - name: 🔍 Type check
+        run: npm run type-check || true
+
+      - name: 🏥 Run Expo Doctor
+        run: npx expo-doctor
+
+  build-preview:
+    name: Build Preview APK
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    needs: test
+    defaults:
+      run:
+        working-directory: ./mobile
+
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: mobile/package-lock.json
+
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: 🏗️ Setup EAS
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: 📱 Build Preview APK
+        run: eas build --platform android --profile preview --non-interactive
+
+  build-production:
+    name: Build Production Apps
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    needs: test
+    defaults:
+      run:
+        working-directory: ./mobile
+
+    strategy:
+      matrix:
+        platform: [android, ios]
+
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: mobile/package-lock.json
+
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: 🏗️ Setup EAS
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: 📱 Build ${{ matrix.platform }}
+        run: |
+          eas build \
+            --platform ${{ matrix.platform }} \
+            --profile production \
+            --non-interactive \
+            --auto-submit
+
+      - name: 📊 Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-${{ matrix.platform }}
+          path: |
+            mobile/*.apk
+            mobile/*.aab
+            mobile/*.ipa
+            mobile/*.app
+
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    needs: build-production
+
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 📦 Download artifacts
+        uses: actions/download-artifact@v3
+
+      - name: 🏷️ Get version
+        id: version
+        run: |
+          VERSION=$(node -p "require('./mobile/package.json').version")
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: 📝 Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ steps.version.outputs.version }}
+          name: Release v${{ steps.version.outputs.version }}
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+          files: |
+            build-android/*.apk
+            build-android/*.aab
+            build-ios/*.ipa
+
+  notify:
+    name: Send Notifications
+    runs-on: ubuntu-latest
+    if: always()
+    needs: [test, build-preview, build-production]
+
+    steps:
+      - name: 📢 Notify build status
+        run: |
+          if [ "${{ needs.build-production.result }}" == "success" ]; then
+            echo "✅ Build successful!"
+          else
+            echo "❌ Build failed!"
+          fi

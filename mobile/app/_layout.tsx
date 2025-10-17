@@ -2,10 +2,11 @@ import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Provider as PaperProvider, MD3LightTheme, MD3DarkTheme } from 'react-native-paper';
-import { useColorScheme } from 'react-native';
-import useStore from '../lib/store';
-import { useEffect } from 'react';
+import { useColorScheme, AppState } from 'react-native';
+import useStore from '../lib/store/index';
+import { useEffect, useRef } from 'react';
 import * as SplashScreen from 'expo-splash-screen';
+import analytics, { initializeAnalytics } from '../lib/analytics';
 
 // Prevent auto-hiding of splash screen
 SplashScreen.preventAutoHideAsync();
@@ -38,6 +39,7 @@ const darkTheme = {
 export default function RootLayout() {
   const colorScheme = useColorScheme();
   const settings = useStore((state) => state.settings);
+  const appState = useRef(AppState.currentState);
 
   // Determine theme based on settings
   const theme = settings.theme === 'auto'
@@ -45,11 +47,29 @@ export default function RootLayout() {
     : settings.theme === 'dark' ? darkTheme : lightTheme;
 
   useEffect(() => {
+    // Initialize analytics
+    initializeAnalytics();
+    analytics.trackAppOpen();
+
     // Hide splash screen once app is ready
     const hideSplash = async () => {
       await SplashScreen.hideAsync();
     };
     hideSplash();
+
+    // Track app state changes
+    const subscription = AppState.addEventListener('change', nextAppState => {
+      if (appState.current.match(/inactive|background/) && nextAppState === 'active') {
+        analytics.trackAppForeground();
+      } else if (appState.current === 'active' && nextAppState.match(/inactive|background/)) {
+        analytics.trackAppBackground();
+      }
+      appState.current = nextAppState;
+    });
+
+    return () => {
+      subscription.remove();
+    };
   }, []);
 
   return (

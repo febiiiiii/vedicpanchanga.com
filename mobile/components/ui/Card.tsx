@@ -24,7 +24,7 @@ export const Card: React.FC<CardProps> = ({
   return (
     <PaperCard
       mode={mode}
-      style={[styles.card, style]}
+      style={[styles.card, { borderRadius: 4 }, style]} // Reduced border radius
       onPress={onPress}
       {...props}
     >
@@ -69,9 +69,13 @@ export const InfoCard: React.FC<InfoCardProps> = ({
           {label}
         </Text>
       </View>
-      <Text variant="titleMedium" style={styles.infoValue}>
-        {value}
-      </Text>
+      {typeof value === 'string' ? (
+        <Text variant="titleMedium" style={styles.infoValue}>
+          {value}
+        </Text>
+      ) : (
+        <View>{value}</View>
+      )}
     </View>
   );
 };
@@ -90,7 +94,7 @@ const styles = StyleSheet.create({
   },
   infoCard: {
     padding: 12,
-    borderRadius: 12,
+    borderRadius: 3, // Reduced from 6
     marginVertical: 4,
   },
   infoHeader: {

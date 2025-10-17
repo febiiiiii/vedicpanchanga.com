@@ -2,6 +2,9 @@
 
 A modern React Native mobile application for iOS and Android that provides traditional Hindu calendar (Panchanga) calculations with high-precision astronomical data.
 
+**Status**: ✅ Functional and ready for testing
+**Last Updated**: October 16, 2025
+
 ## Features
 
 - **Complete Panchanga Calculations**: Tithi, Nakshatra, Yoga, Karana, and Vaara
@@ -23,6 +26,16 @@ A modern React Native mobile application for iOS and Android that provides tradi
 - **UI Components**: React Native Paper (Material Design)
 - **API**: Axios for backend communication
 - **Backend**: Python FastAPI (existing backend at port 8121)
+
+## Recent Updates
+
+### Latest Fixes (October 2025)
+- ✅ Fixed expo-router entry point configuration
+- ✅ Resolved API client request structure issues
+- ✅ Fixed planetary positions display errors
+- ✅ Added base64 image error handling
+- ✅ Reduced UI border radius for modern look
+- ✅ Created comprehensive deployment documentation
 
 ## Prerequisites
 

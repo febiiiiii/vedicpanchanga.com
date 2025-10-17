@@ -19,24 +19,24 @@ export function PanchangaResults({ planetaryPositions, birthChart }: PanchangaRe
 
   return (
     <Tabs defaultValue="panchanga" className="space-y-4 sm:space-y-6">
-      <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 gap-1">
-        <TabsTrigger value="panchanga" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
-          <Calendar className="h-3 w-3 sm:h-4 sm:w-4" />
-          <span className="hidden sm:inline">Panchanga</span>
-          <span className="sm:hidden">Panch</span>
+      <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 gap-2 p-1.5">
+        <TabsTrigger value="panchanga" className="flex items-center gap-2 text-xs sm:text-sm py-2.5 px-3 min-h-[44px] transition-all duration-200">
+          <Calendar className="h-4 w-4 sm:h-4 sm:w-4" />
+          <span className="hidden sm:inline font-medium">Panchanga</span>
+          <span className="sm:hidden font-medium">Panch</span>
         </TabsTrigger>
-        <TabsTrigger value="planets" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
-          <Star className="h-3 w-3 sm:h-4 sm:w-4" />
-          <span>Planets</span>
+        <TabsTrigger value="planets" className="flex items-center gap-2 text-xs sm:text-sm py-2.5 px-3 min-h-[44px] transition-all duration-200">
+          <Star className="h-4 w-4 sm:h-4 sm:w-4" />
+          <span className="font-medium">Planets</span>
         </TabsTrigger>
-        <TabsTrigger value="chart" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
-          <Diamond className="h-3 w-3 sm:h-4 sm:w-4" />
-          <span>Chart</span>
+        <TabsTrigger value="chart" className="flex items-center gap-2 text-xs sm:text-sm py-2.5 px-3 min-h-[44px] transition-all duration-200">
+          <Diamond className="h-4 w-4 sm:h-4 sm:w-4" />
+          <span className="font-medium">Chart</span>
         </TabsTrigger>
-        <TabsTrigger value="muhurta" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
-          <Sun className="h-3 w-3 sm:h-4 sm:w-4" />
-          <span className="hidden sm:inline">Muhurta</span>
-          <span className="sm:hidden">Time</span>
+        <TabsTrigger value="muhurta" className="flex items-center gap-2 text-xs sm:text-sm py-2.5 px-3 min-h-[44px] transition-all duration-200">
+          <Sun className="h-4 w-4 sm:h-4 sm:w-4" />
+          <span className="hidden sm:inline font-medium">Muhurta</span>
+          <span className="sm:hidden font-medium">Time</span>
         </TabsTrigger>
       </TabsList>
 

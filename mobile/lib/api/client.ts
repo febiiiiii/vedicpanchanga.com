@@ -10,7 +10,7 @@ const API_BASE_URL = Constants.expoConfig?.extra?.apiUrl ||
     ? 'https://api.vedicpanchanga.com' // Replace with your production URL
     : Platform.select({
         ios: 'http://localhost:8121',
-        android: 'http://10.0.2.2:8121', // Android emulator
+        android: 'http://10.0.2.2:8121', // Android emulator - replace with your machine's IP for physical device
         default: 'http://localhost:8121'
       }));
 
@@ -143,17 +143,23 @@ class ApiClient {
     // Parse time
     const [hours, minutes] = time.split(':').map(Number);
 
-    // Prepare request data
+    // Prepare request data matching backend API structure
     const requestData = {
-      year: date.getFullYear(),
-      month: date.getMonth() + 1, // JavaScript months are 0-indexed
-      day: date.getDate(),
-      hour: hours || 0,
-      min: minutes || 0,
-      sec: 0,
-      lat: location.latitude,
-      lon: location.longitude,
-      tz: location.timezone
+      date: {
+        year: date.getFullYear(),
+        month: date.getMonth() + 1, // JavaScript months are 0-indexed
+        day: date.getDate(),
+        hour: hours || 0,
+        minute: minutes || 0,
+        second: 0
+      },
+      location: {
+        latitude: location.latitude,
+        longitude: location.longitude,
+        timezone: location.timezone,
+        city: location.city,
+        country: location.country
+      }
     };
 
     try {
@@ -195,7 +201,7 @@ class ApiClient {
     }
 
     try {
-      const response = await this.client.post('/cities/search', { query });
+      const response = await this.client.post('/cities/search', { city_name: query });
       const results = response.data;
 
       // Cache the results

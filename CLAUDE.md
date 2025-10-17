@@ -4,9 +4,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Vedic Panchanga - A full-stack web application for calculating traditional Hindu almanac (Panchanga) with high-precision astronomical calculations using Swiss Ephemeris.
+Vedic Panchanga - A full-stack web and mobile application for calculating traditional Hindu almanac (Panchanga) with high-precision astronomical calculations using Swiss Ephemeris.
 
-**Architecture**: Two-tier application with Python FastAPI backend (port 8000) and Next.js 15 frontend (port 3000).
+**Architecture**: Multi-platform application with shared backend
+- **Backend**: Python FastAPI (port 8121)
+- **Web Frontend**: Next.js 15 (port 3121)
+- **Mobile Apps**: React Native with Expo (iOS & Android, port 8081)
 
 ## Development Commands
 
@@ -27,6 +30,16 @@ npm run dev  # Development server with Turbopack on http://localhost:3121
 npm run build  # Production build
 npm run start  # Production server
 npm run lint  # Run ESLint
+```
+
+### Mobile Apps Setup and Run
+```bash
+cd mobile
+npm install
+npx expo start  # Start development server on http://localhost:8081
+npx expo run:android  # Run on Android emulator
+npx expo run:ios  # Run on iOS simulator
+npx expo start --web  # Run in web browser
 ```
 
 ### Running Tests
@@ -57,6 +70,17 @@ Key endpoints:
   - `city-dropdown.tsx` - Location search with debouncing
   - `date-time-picker.tsx` - Date/time selection interface
   - UI components in `components/ui/` - Shadcn/ui with Radix primitives
+
+### Mobile Apps (React Native with Expo)
+- **Navigation**: Expo Router with file-based routing
+- **UI Library**: React Native Paper (Material Design)
+- **State Management**: Zustand with AsyncStorage persistence
+- **Features**:
+  - Native date/time pickers for each platform
+  - GPS location support via expo-location
+  - Offline caching with AsyncStorage
+  - Dark/light theme auto-switching
+- **Screens**: 4 tab navigation (Panchanga, Planets, Chart, Muhurta)
 
 ### Key Technical Decisions
 
@@ -113,6 +137,25 @@ vedicpanchanga.com/
 │   ├── public/                  # Static assets
 │   ├── package.json             # Frontend dependencies
 │   └── README.md                # Frontend documentation
+│
+├── mobile/                       # React Native mobile apps (port 8081)
+│   ├── app/                     # Expo Router screens
+│   │   ├── (tabs)/             # Tab navigation screens
+│   │   │   ├── index.tsx       # Panchanga screen
+│   │   │   ├── planets.tsx     # Planetary positions
+│   │   │   ├── chart.tsx       # Birth chart
+│   │   │   └── muhurta.tsx     # Muhurta timings
+│   │   └── _layout.tsx         # Root layout
+│   ├── components/              # Reusable React Native components
+│   ├── lib/                     # Core logic and utilities
+│   │   ├── api/                # API client and types
+│   │   ├── store/              # Zustand state management
+│   │   └── utils/              # Utility functions
+│   ├── android/                 # Android native code
+│   ├── ios/                     # iOS native code
+│   ├── App.tsx                  # Entry point
+│   ├── app.json                 # Expo configuration
+│   └── package.json             # Mobile app dependencies
 │
 ├── tests/                        # Testing and verification
 │   ├── test_api.py              # Backend API tests

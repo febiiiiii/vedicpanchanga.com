@@ -1,6 +1,6 @@
 import React from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
-import { Text, useTheme, List, Chip } from 'react-native-paper';
+import { Text, useTheme, List, Chip, Divider } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import useStore from '../../lib/store';
@@ -33,45 +33,56 @@ export default function MuhurtaScreen() {
     );
   }
 
+  const formatTime = (timeValue: any): string => {
+    if (!timeValue) return '--:--';
+    if (typeof timeValue === 'string') return timeValue;
+    if (timeValue.hours !== undefined && timeValue.minutes !== undefined) {
+      const hours = String(timeValue.hours).padStart(2, '0');
+      const minutes = String(timeValue.minutes).padStart(2, '0');
+      return `${hours}:${minutes}`;
+    }
+    return '--:--';
+  };
+
   const getMuhurtaItems = (): MuhurtaItem[] => {
     const items: MuhurtaItem[] = [];
-    const muhurta = panchangaData.panchanga.muhurta;
+    const panchanga = panchangaData.panchanga;
 
-    if (muhurta?.abhijit) {
+    if (panchanga?.abhijit_muhurta) {
       items.push({
         name: 'Abhijit Muhurta',
-        start: muhurta.abhijit.start,
-        end: muhurta.abhijit.end,
+        start: formatTime(panchanga.abhijit_muhurta.start),
+        end: formatTime(panchanga.abhijit_muhurta.end),
         type: 'good',
         description: 'Most auspicious time of the day'
       });
     }
 
-    if (muhurta?.rahuKala) {
+    if (panchanga?.rahu_kala) {
       items.push({
         name: 'Rahu Kala',
-        start: muhurta.rahuKala.start,
-        end: muhurta.rahuKala.end,
+        start: formatTime(panchanga.rahu_kala.start),
+        end: formatTime(panchanga.rahu_kala.end),
         type: 'bad',
         description: 'Inauspicious time, avoid important activities'
       });
     }
 
-    if (muhurta?.yamaGanda) {
+    if (panchanga?.yama_ganda) {
       items.push({
         name: 'Yama Ganda',
-        start: muhurta.yamaGanda.start,
-        end: muhurta.yamaGanda.end,
+        start: formatTime(panchanga.yama_ganda.start),
+        end: formatTime(panchanga.yama_ganda.end),
         type: 'bad',
         description: 'Inauspicious period ruled by Yama'
       });
     }
 
-    if (muhurta?.gulikaKala) {
+    if (panchanga?.gulika_kala) {
       items.push({
         name: 'Gulika Kala',
-        start: muhurta.gulikaKala.start,
-        end: muhurta.gulikaKala.end,
+        start: formatTime(panchanga.gulika_kala.start),
+        end: formatTime(panchanga.gulika_kala.end),
         type: 'bad',
         description: 'Inauspicious time ruled by Saturn'
       });
@@ -140,7 +151,7 @@ export default function MuhurtaScreen() {
                     </View>
                   )}
                 />
-                {index < muhurtaItems.length - 1 && <List.Section />}
+                {index < muhurtaItems.length - 1 && <Divider />}
               </View>
             ))}
           </List.Section>
