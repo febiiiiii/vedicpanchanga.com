@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { checkRateLimit } from '@/lib/rate-limiter';
 import { logError, logRequest } from '@/lib/logger';
+import { toZonedTime } from 'date-fns-tz';
+import { getYear, getMonth, getDate, getHours, getMinutes, getSeconds } from 'date-fns';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8121';
 
@@ -71,22 +73,17 @@ export async function POST(request: NextRequest) {
     }
 
     const parsedDate = new Date(date);
-
     const userTimezone = location.timezone || 'America/Vancouver';
-    const userTimeString = parsedDate.toLocaleString('en-US', {
-      timeZone: userTimezone,
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-      hour12: false
-    });
 
-    const [datePart, timePart] = userTimeString.split(', ');
-    const [month, day, year] = datePart.split('/').map(Number);
-    const [hour, minute, second] = timePart.split(':').map(Number);
+    // Convert UTC date to user's timezone using date-fns-tz
+    const zonedDate = toZonedTime(parsedDate, userTimezone);
+
+    const year = getYear(zonedDate);
+    const month = getMonth(zonedDate) + 1; // getMonth() returns 0-11, we need 1-12
+    const day = getDate(zonedDate);
+    const hour = getHours(zonedDate);
+    const minute = getMinutes(zonedDate);
+    const second = getSeconds(zonedDate);
 
     const apiRequest = {
       date: {
