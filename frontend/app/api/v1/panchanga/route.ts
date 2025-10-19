@@ -2,9 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { checkRateLimit } from '@/lib/rate-limiter';
 import { logError, logRequest } from '@/lib/logger';
 import { toZonedTime } from 'date-fns-tz';
-import { getYear, getMonth, getDate, getHours, getMinutes, getSeconds } from 'date-fns';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8121';
+const DEFAULT_TIMEZONE = 'Asia/Kolkata';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -12,6 +12,14 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'Content-Type, Authorization',
   'Access-Control-Max-Age': '86400',
 };
+
+function getClientIp(request: NextRequest): string {
+  return request.headers.get('x-client-ip') ||
+    request.headers.get('cf-connecting-ip') ||
+    request.headers.get('x-forwarded-for')?.split(',')[0] ||
+    request.headers.get('x-real-ip') ||
+    'unknown';
+}
 
 const formatTime = (time: { hours?: number; minutes?: number } | undefined | null): string => {
   if (!time) return 'N/A';
@@ -72,18 +80,25 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    if (!location.timezone) {
+      return NextResponse.json(
+        { error: 'Timezone is required in location object' },
+        { status: 400, headers: corsHeaders }
+      );
+    }
+
     const parsedDate = new Date(date);
-    const userTimezone = location.timezone || 'America/Vancouver';
+    const userTimezone = location.timezone;
 
     // Convert UTC date to user's timezone using date-fns-tz
     const zonedDate = toZonedTime(parsedDate, userTimezone);
 
-    const year = getYear(zonedDate);
-    const month = getMonth(zonedDate) + 1; // getMonth() returns 0-11, we need 1-12
-    const day = getDate(zonedDate);
-    const hour = getHours(zonedDate);
-    const minute = getMinutes(zonedDate);
-    const second = getSeconds(zonedDate);
+    const year = zonedDate.getFullYear();
+    const month = zonedDate.getMonth() + 1; // getMonth() returns 0-11, we need 1-12
+    const day = zonedDate.getDate();
+    const hour = zonedDate.getHours();
+    const minute = zonedDate.getMinutes();
+    const second = zonedDate.getSeconds();
 
     const apiRequest = {
       date: {
@@ -140,8 +155,7 @@ export async function POST(request: NextRequest) {
     const response = {
       date: parsedDate.toISOString(),
       location: {
-        ...location,
-        timezone: location.timezone || 'Asia/Kolkata'
+        ...location
       },
 
       sun: {
@@ -228,14 +242,9 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     status = 500;
 
-    const ip = request.headers.get('x-client-ip') ||
-      request.headers.get('x-forwarded-for')?.split(',')[0] ||
-      request.headers.get('x-real-ip') ||
-      'unknown';
-
     logError({
       timestamp: new Date().toISOString(),
-      ip,
+      ip: getClientIp(request),
       endpoint: request.nextUrl.pathname,
       error: error instanceof Error ? error.message : 'Unknown error',
       stack: error instanceof Error ? error.stack : undefined,
@@ -262,13 +271,13 @@ export async function GET(request: NextRequest) {
       latitude: parseFloat(searchParams.get('lat') || '12.9716'),
       longitude: parseFloat(searchParams.get('lng') || '77.5946'),
       city: searchParams.get('city') || 'Bangalore',
-      timezone: searchParams.get('tz') || 'Asia/Kolkata'
+      timezone: searchParams.get('tz') || DEFAULT_TIMEZONE
     }
   };
 
   const req = new Request(request.url, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: request.headers,
     body: JSON.stringify(body)
   });
 
@@ -276,27 +285,12 @@ export async function GET(request: NextRequest) {
 }
 
 function logRequestData(request: NextRequest, status: number, startTime: number): void {
-  const ip = request.headers.get('x-client-ip') ||
-    request.headers.get('cf-connecting-ip') ||
-    request.headers.get('x-forwarded-for')?.split(',')[0] ||
-    request.headers.get('x-real-ip') ||
-    'unknown';
-
-  const country = request.headers.get('x-client-country') ||
-    request.headers.get('cf-ipcountry') ||
-    undefined;
-
   const duration = (Date.now() - startTime) / 1000;
-
-  const cfRay = request.headers.get('x-cf-ray') || request.headers.get('cf-ray') || undefined;
-  const cfCacheStatus = request.headers.get('x-cf-cache-status') || request.headers.get('cf-cache-status') || undefined;
-  const cfDeviceType = request.headers.get('x-cf-device-type') || request.headers.get('cf-device-type') || undefined;
-  const protocol = request.headers.get('x-protocol') || undefined;
 
   logRequest({
     timestamp: new Date().toISOString(),
-    ip,
-    country,
+    ip: getClientIp(request),
+    country: request.headers.get('x-client-country') || request.headers.get('cf-ipcountry') || undefined,
     method: request.method,
     endpoint: request.nextUrl.pathname,
     query: request.nextUrl.search || '',
@@ -304,9 +298,9 @@ function logRequestData(request: NextRequest, status: number, startTime: number)
     userAgent: request.headers.get('user-agent') || '',
     status,
     duration,
-    cfRay,
-    cfCacheStatus,
-    cfDeviceType,
-    protocol,
+    cfRay: request.headers.get('x-cf-ray') || request.headers.get('cf-ray') || undefined,
+    cfCacheStatus: request.headers.get('x-cf-cache-status') || request.headers.get('cf-cache-status') || undefined,
+    cfDeviceType: request.headers.get('x-cf-device-type') || request.headers.get('cf-device-type') || undefined,
+    protocol: request.headers.get('x-protocol') || undefined,
   });
 }
